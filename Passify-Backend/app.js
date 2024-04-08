@@ -6,6 +6,7 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 
 import loginRouter from "./routes/auth.route.js";
+import studentRouter from "./routes/student.route.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use("/api/v1/auth", loginRouter);
+app.use("/api/v1/student", studentRouter);
 
 mongoose
   .connect(process.env.MONGO_CONNECTION_URL)
