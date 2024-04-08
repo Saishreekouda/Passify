@@ -2,6 +2,7 @@ import Student from "../models/student.model.js";
 import Admin from "../models/admin.model.js";
 import jwt from "jsonwebtoken";
 import { logUser, getDashboard, verifyUser } from "../utils/aviral.js";
+import bcrypt from "bcrypt";
 
 export async function loginAsStudent(req, res) {
   try {
@@ -15,6 +16,12 @@ export async function loginAsStudent(req, res) {
         username: username,
         password: password,
       });
+
+      //if the user is not found in aviral database
+      if (!response.data.user_group) {
+        return res.status(401).json({ message: "Invalid credentials." });
+      }
+
       const aviraltoken = response.data.jwt_token;
       const session = response.data.session_id;
 
@@ -54,6 +61,72 @@ export async function loginAsStudent(req, res) {
     }
   } catch (err) {
     console.log(err);
+  }
+}
+
+export async function signUpAsAdmin(req, res) {
+  try {
+    const { username, password } = req.body;
+
+    // Check if admin with the same username already exists
+    const existingAdmin = await Admin.findOne({ username });
+    if (existingAdmin) {
+      return res
+        .status(400)
+        .json({ message: "Admin with this username already exists." });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create a new admin
+    const { name, role, phone } = req.body;
+    if (!name || !role) {
+      return res.status(400).json({ message: "Name and Role are required" });
+    }
+    const newAdmin = await Admin.create({
+      username: username,
+      password: hashedPassword,
+      name: name,
+      role: role,
+      phone: phone,
+    });
+
+    // Generate JWT token for the new admin
+    const token = generateToken(username);
+    res.status(201).json({ token, user: newAdmin });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+export async function loginAsAdmin(req, res) {
+  try {
+    const { username, password } = req.body;
+
+    // Check if admin exists
+    const admin = await Admin.findOne({ username });
+    if (!admin) {
+      return res
+        .status(401)
+        .json({ message: "Username or Password is Incorrect." });
+    }
+
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ message: "Username or Password is Incorrect." });
+    }
+
+    // Generate JWT token for the admin
+    const token = generateToken(username);
+    res.status(200).json({ token, user: admin });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
   }
 }
 
