@@ -11,6 +11,7 @@ import {
   Switch,
   KeyboardAvoidingView,
   Platform,
+  ToastAndroid,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -41,9 +42,8 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      console.log(username, password);
       const response = await axios.post(
-        "http://192.168.123.191:3001/api/v1/auth/student/login",
+        process.env.EXPO_PUBLIC_API_URL + "/auth/student/login",
         {
           username: username,
           password: password,
@@ -54,15 +54,17 @@ export default function Login() {
           },
         }
       );
-      // console.log(response.data);
-      if (!response.status === 200) {
-        throw new Error("Failed to login");
+      console.log(response.data, response.status);
+      if (response.status !== 200) {
+        console.error("Error:", error);
+        ToastAndroid.show(`Invalid Credentials`, ToastAndroid.SHORT);
+        return;
       }
-
+      ToastAndroid.show("Login Successful", ToastAndroid.SHORT);
       navigation.navigate("Home");
     } catch (error) {
       console.error("Error:", error);
-      Alert.alert("Error", "Failed to login. Please try again.");
+      ToastAndroid.show("Login Failed", ToastAndroid.SHORT);
     }
   };
 
