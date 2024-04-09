@@ -98,11 +98,6 @@ export default function Login() {
           />
         </View>
 
-        <View style={styles.buttonView}>
-          <Pressable style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>LOGIN</Text>
-          </Pressable>
-        </View>
 
         {!isStudentLogin && (
           <View style={styles.toggleButtonView}>
