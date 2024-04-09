@@ -38,7 +38,7 @@ const ProfileScreen = () => {
         </Text>
       </View>
       <View style={styles.navbar}>
-      <Navbar/>
+      <Navbar navigation={navigation}/>
       </View>
       
      

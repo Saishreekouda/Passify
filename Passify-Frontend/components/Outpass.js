@@ -4,6 +4,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { Button, Chip } from 'react-native-paper';
 import Header from "./Header";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Navbar from './Navbar';
 
 export default function Outpass({route, navigation}) {
     const { destination, date, transport, time, name, rollno, purpose, status, issuedBy, issueDate, issueTime } = route.params;
@@ -49,6 +50,7 @@ export default function Outpass({route, navigation}) {
       <StatusBar style="auto" />
       </View>
      
+     <Navbar/>
     </View>
   );
 }
@@ -117,6 +119,6 @@ const styles = StyleSheet.create({
   issuedBy: {
     position: "absolute",
     bottom: 80,
-    right: 12,
+    left: 42,
   },
 });

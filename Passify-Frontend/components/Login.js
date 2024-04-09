@@ -42,6 +42,7 @@ export default function Login() {
   // };
 
   const handleLogin = async () => {
+    console.log("hello")
     try {
       const response = await axios.post(
         process.env.EXPO_PUBLIC_API_URL + "/auth/student/login",
