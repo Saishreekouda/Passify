@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     color: "#370556",
   },
   navbar: {
-    marginTop:190,
+    marginTop:210,
     width:400
   },
 });
