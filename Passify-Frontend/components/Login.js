@@ -13,10 +13,7 @@ import {
   Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
 import axios from "axios";
-import { AsyncStorage } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
 
 const logo = require("../assets/Login_Image.png");
 
@@ -24,11 +21,50 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isStudentLogin, setIsStudentLogin] = useState(false);
+
+  const [isLoading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   const handleLogin = async () => {
-    navigation.navigate("Home");
+    setLoading(true);
+
+    try {
+      const response = await axios.get(
+        "http://192.168.123.191:3001/api/v1/test"
+      );
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+    setLoading(false);
   };
+
+  // const handleLogin = async () => {
+  //   try {
+  //     // console.log(username, password)
+  //     const response = await axios.post(
+  //       "http://localhost:3001/api/v1/auth/student/login",
+  //       {
+  //         username: username,
+  //         password: password,
+  //       },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     console.log(response);
+  //     if (!response.ok) {
+  //       throw new Error("Failed to login");
+  //     }
+
+  //     navigation.navigate("Home");
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     Alert.alert("Error", "Failed to login. Please try again.");
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
@@ -39,6 +75,7 @@ export default function Login() {
       behavior={Platform.OS === "ios" ? "padding" : null}
     >
       <SafeAreaView style={styles.inner}>
+        {isLoading && <Text> Loading ... </Text>}
         <Image source={logo} style={styles.image} resizeMode="contain" />
         <Text style={styles.title}>Login</Text>
         <View style={styles.inputView}>
@@ -59,6 +96,12 @@ export default function Login() {
             autoCorrect={false}
             autoCapitalize="none"
           />
+        </View>
+
+        <View style={styles.buttonView}>
+          <Pressable style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>LOGIN</Text>
+          </Pressable>
         </View>
 
         {!isStudentLogin && (

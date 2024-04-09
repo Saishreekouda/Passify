@@ -1,5 +1,6 @@
 import Student from "../models/student.model.js";
 import Admin from "../models/admin.model.js";
+import Guard from "../models/guard.model.js";
 import jwt from "jsonwebtoken";
 import { logUser, getDashboard, verifyUser } from "../utils/aviral.js";
 import bcrypt from "bcrypt";
@@ -81,8 +82,8 @@ export async function signUpAsAdmin(req, res) {
 
     // Create a new admin
     const { name, role, phone } = req.body;
-    if (!name || !role) {
-      return res.status(400).json({ message: "Name and Role are required" });
+    if (!name) {
+      return res.status(400).json({ message: "Name is required" });
     }
     const newAdmin = await Admin.create({
       username: username,
@@ -129,6 +130,73 @@ export async function loginAsAdmin(req, res) {
     res.status(500).json({ message: "Server Error" });
   }
 }
+
+export async function signUpAsGuard(req, res) {
+  try {
+    const { username, password } = req.body;
+
+    // Check if guard with the same username already exists
+    const existingGuard = await Guard.findOne({ username });
+    if (existingGuard) {
+      return res
+        .status(400)
+        .json({ message: "Guard with this username already exists." });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Create a new guard
+    const { name,phone } = req.body;
+    if (!name) {
+      return res.status(400).json({ message: "Name is required" });
+    }
+    const newGuard = await Guard.create({
+      username: username,
+      password: hashedPassword,
+      name: name,
+      phone: phone,
+    });
+
+    // Generate JWT token for the new guard
+    const token = generateToken(username, "guard");
+    res.status(201).json({ token, user: newGuard });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+export async function loginAsGuard(req, res) {
+  try {
+    const { username, password } = req.body;
+
+    // Check if guard exists
+    const guard = await Guard.findOne({ username });
+    if (!guard) {
+      return res
+        .status(401)
+        .json({ message: "Username or Password is Incorrect." });
+    }
+
+    // Compare passwords
+    const isMatch = await bcrypt.compare(password, guard.password);
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ message: "Username or Password is Incorrect." });
+    }
+
+    // Generate JWT token for the guard
+    const token = generateToken(username, "guard");
+    res.status(200).json({ token, user: guard });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+}
+
+
 
 const generateToken = (username, role) => {
   return jwt.sign({ username, role }, process.env.JWT_SECRET, {
