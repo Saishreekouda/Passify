@@ -1,8 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet,Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import Navbar from './components/Navbar';
+import Outpass from './components/Outpass';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import Splash from "./components/Splash";
 import Login from "./components/Login";
 import Application from "./components/Application";
@@ -25,6 +28,7 @@ export default function App() {
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
+  
   );
 }
 
@@ -36,3 +40,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+

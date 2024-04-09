@@ -18,7 +18,7 @@ export const verifyStudentToken = (req, res, next) => {
         .json({ error: "Unauthorised, student only route" });
     }
     req.username = decoded.username;
-    console.log(req.username);
+    // console.log(req.username);
     next();
   });
 };

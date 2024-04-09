@@ -16,7 +16,7 @@ export const verifyAdminToken = (req, res, next) => {
       return res.status(401).json({ error: "Unauthorised, admin only route." });
     }
     req.username = decoded.username;
-    console.log(req.username);
+    // console.log(req.username);
     next();
   });
 };

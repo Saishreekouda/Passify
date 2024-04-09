@@ -6,17 +6,16 @@ const outpassSchema = new Schema({
     type: Schema.Types.ObjectId,
     required: true,
   },
-  code: {
-    type: String,
-    unique: true,
-    required: true,
-  },
   destination: {
     type: String,
     required: true,
   },
-  outDateTime: {
-    type: Date,
+  outDate: {
+    type: String,
+    required: true,
+  },
+  outTime: {
+    type: String,
     required: true,
   },
   transport: {
@@ -27,17 +26,23 @@ const outpassSchema = new Schema({
     type: String,
     required: true,
   },
-  state: {
+  status: {
     type: String,
     enum: ["Accepted", "Pending", "Used", "Rejected"],
     default: "Pending",
   },
-  issueDateTime: {
+  applicationTime: {
     type: Date,
+    default: Date.now,
+  },
+  issueDate: {
+    type: String,
+  },
+  issueTime: {
+    type: String,
   },
   issuedBy: {
-    type: Schema.Types.ObjectId,
-    ref: "Admin",
+    type: String,
   },
 });
 

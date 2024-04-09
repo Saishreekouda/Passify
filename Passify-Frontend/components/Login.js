@@ -23,32 +23,37 @@ export default function Login() {
   const [isStudentLogin, setIsStudentLogin] = useState(false);
   const navigation = useNavigation();
 
-  const handleLogin = async () => {
-    try {
-      // console.log(username, password)
-      const response = await axios.post(
-        "http://localhost:3001/api/v1/auth/student/login",
-        {
-          username: username,
-          password: password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(response);
-      if (!response.ok) {
-        throw new Error("Failed to login");
-      }
-  
-      navigation.navigate("Home");
-    } catch (error) {
-      console.error("Error:", error);
-      Alert.alert("Error", "Failed to login. Please try again.");
-    }
+
+  const handleLogin = () => {
+    navigation.navigate("Home");
   };
+
+  // const handleLogin = async () => {
+  //   try {
+  //     // console.log(username, password)
+  //     const response = await axios.post(
+  //       "http://localhost:3001/api/v1/auth/student/login",
+  //       {
+  //         username: username,
+  //         password: password,
+  //       },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     console.log(response);
+  //     if (!response.ok) {
+  //       throw new Error("Failed to login");
+  //     }
+  
+  //     navigation.navigate("Home");
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     Alert.alert("Error", "Failed to login. Please try again.");
+  //   }
+  // };
   
 
   return (

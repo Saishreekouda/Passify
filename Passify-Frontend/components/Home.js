@@ -1,42 +1,43 @@
 import { StatusBar } from "expo-status-bar";
-
 import { useState } from "react";
 import { Image, StyleSheet, Text, View, ScrollView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import home from "../assets/home.png"
 import Splash from "./Splash";
 import Login from "./Login";
+import { Alert } from "react-native";
+
+import home from "../assets/home.png";
+import { useNavigation } from "@react-navigation/native";
 
 
 export default function Home() {
+  const navigation = useNavigation();
   const [formData, setFormData] = useState({
     name: "",
-    rollno: "",
-    semester: "",
-    date: "",
+    dateOfEvent: "", 
     destination: "",
     transport: "",
-    nowTime: "",
     outTime: "",
-    issuedBy: "",
+    issuedBy: ""
   });
   const handleInputChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
   };
+
   const handleSubmit = () => {
-    if (
-      !formData.dateOfEvent.trim() ||
-      !formData.destination.trim() ||
-      !formData.transport.trim() ||
-      !formData.nowTime.trim() ||
-      !formData.outTime.trim() ||
-      !formData.issuedBy.trim() ||
-      !formData.username.trim() ||
-      !formData.password.trim()
-    ) {
-      Alert.alert("Error", "Please fill in all fields");
-      return;
-    }
+    // if (
+    //   !formData.dateOfEvent.trim() ||
+    //   !formData.destination.trim() ||
+    //   !formData.transport.trim() ||
+    //   !formData.nowTime.trim() ||
+    //   !formData.outTime.trim() ||
+    //   !formData.issuedBy.trim() ||
+    //   !formData.username.trim() ||
+    //   !formData.password.trim()
+    // ) {
+    //   Alert.alert("Error", "Please fill in all fields");
+    //   return;
+    // }
 
     console.log("Submitted:", formData);
 
@@ -44,12 +45,11 @@ export default function Home() {
       dateOfEvent: "",
       destination: "",
       transport: "",
-      nowTime: "",
       outTime: "",
       issuedBy: "",
-      username: "",
-      password: "",
     });
+
+    navigation.navigate("ApplicationsPage");
   };
 
   return (
@@ -89,13 +89,7 @@ export default function Home() {
             onChangeText={(text) => handleInputChange("transport", text)}
             left={<TextInput.Icon icon="car" />}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Now Time"
-            value={formData.nowTime}
-            onChangeText={(text) => handleInputChange("nowTime", text)}
-            left={<TextInput.Icon icon="clock" />}
-          />
+
           <TextInput
             style={styles.input}
             placeholder="Out Time"
