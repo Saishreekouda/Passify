@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function Application({ destination, time, status, date }) {
+export default function Application({ name, rollno, destination, time, status, date }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isStudentLogin, setIsStudentLogin] = useState(false);
@@ -10,15 +10,24 @@ export default function Application({ destination, time, status, date }) {
     <View style={styles.container}>
       <View style={styles.card}>
         <View style={styles.flex}>
-          <Text style={styles.destination}>{destination}</Text>
+          <View>
+            <Text style={styles.destination}>{destination}</Text>
+            <Text style={[styles.time,{marginTop:0}]}>{name}</Text>
+            <Text style={[styles.time,{marginTop:2}]}>{rollno}</Text>
+          </View>
+          
+
           <View style={styles.statusTag}>
             <Text style={[styles.status, { color: getStatusColor(status) }]}>
               {status}
             </Text>
           </View>
         </View>
-        <Text style={styles.time}>{time}</Text>
+        <View style={[styles.flex,{marginTop:20,marginBottom:12}]}>
+       
         <Text style={styles.date}>{date}</Text>
+        <Text style={styles.time}>{time}</Text>
+        </View>
       </View>
     </View>
   );
@@ -47,6 +56,7 @@ const styles = StyleSheet.create({
   flex: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   card: {
     backgroundColor: "#370556",
@@ -66,13 +76,11 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 14,
     textAlign: "left",
-    marginTop: 24,
     color: "white",
   },
   date: {
     fontSize: 14,
     textAlign: "left",
-    marginVertical: 4,
     color: "white",
   },
   status: {

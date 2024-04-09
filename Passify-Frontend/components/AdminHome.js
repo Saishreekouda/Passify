@@ -11,71 +11,72 @@ import {
   Switch,
   ScrollView,
 } from "react-native";
+// import Navbar from "./Navbar";
 import Application from "./Application";
 import { SegmentedButtons } from 'react-native-paper';
-
+import AdminNavbar from "./AdminNavbar";
 const logo = require("../assets/Login_Image.png");
 const applications = [
-  {
-    destination: "Civil Lines",
-    time: "10:00 am",
-    status: "Pending",
-    date: "12th May 2024",
-    name: "John Doe",
-    rollno: "IIT2021009",
-  },
-  {
-    destination: "Civil Lines",
-    time: "10:00 am",
-    status: "Accepted",
-    date: "12th May 2024",
-    name: "John Doe",
-    rollno: "IIT2021003",
-  },
-  {
-    destination: "Civil Lines",
-    time: "10:00 am",
-    status: "Rejected",
-    date: "12th May 2024",
-    name: "John Doe",
-    rollno: "IIT2021002",
-  },
-  {
-    destination: "Civil Lines",
-    time: "10:00 am",
-    status: "Invalid",
-    date: "12th May 2024",
-    name: "John Doe",
-    rollno: "IIT2021008",
-  },
-];
-export default function ApplicationsPage() {
+    {
+      destination: "Civil Lines",
+      time: "10:00 am",
+      status: "Pending",
+      date: "12th May 2024",
+      name: "John Doe",
+      rollno: "IIT2021009",
+    },
+    {
+      destination: "Civil Lines",
+      time: "10:00 am",
+      status: "Accepted",
+      date: "12th May 2024",
+      name: "John Doe",
+      rollno: "IIT2021003",
+    },
+    {
+      destination: "Civil Lines",
+      time: "10:00 am",
+      status: "Rejected",
+      date: "12th May 2024",
+      name: "John Doe",
+      rollno: "IIT2021002",
+    },
+    {
+      destination: "Civil Lines",
+      time: "10:00 am",
+      status: "Invalid",
+      date: "12th May 2024",
+      name: "John Doe",
+      rollno: "IIT2021008",
+    },
+  ];
+export default function Home() {
 
-  const [value, setValue] = React.useState('upcoming');
+  const [value, setValue] = React.useState('pending');
   
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isStudentLogin, setIsStudentLogin] = useState(false);
 
   const filteredApplications =
-  value === "upcoming"
+  value === "pending"
     ? applications.filter(
-        (app) => app.status === "Pending" || app.status === "Accepted"
+        (app) => app.status === "Pending"
       )
     : applications.filter(
-        (app) => app.status === "Rejected" || app.status === "Invalid"
+        (app) => app.status === "Rejected" || app.status === "Invalid" || app.status === "Accepted"
       );
 
   return (
-    <View style={{ paddingBottom: 20 }}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView style={{ paddingBottom: 20 }}>
+    <View contentContainerStyle={styles.container}>
       <Text style={styles.title}>My Applications</Text>
       <View style={{ width: "100%", paddingLeft: 32, paddingRight: 32, paddingTop: 0 }}>
         <SegmentedButtons
           value={value}
           onValueChange={setValue}
           buttons={[
-            { value: "upcoming", label: "Upcoming" },
+            { value: "pending", label: "Pending" },
             { value: "past", label: "Past" },
           ]}
         />
@@ -93,8 +94,9 @@ export default function ApplicationsPage() {
           rollno={app.rollno}
         />
       ))}
-    </ScrollView>
-  </View>
+    </View>
+    
+  </ScrollView>
   );
 }
 
