@@ -27,47 +27,37 @@ export default function Login() {
   const [isLoading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  // const handleLogin = async () => {
-  //   setLoading(true);
-
-  //   try {
-  //     const response = await axios.get(
-  //       "http://192.168.123.191:3001/api/v1/test"
-  //     );
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  //   setLoading(false);
-  // };
-
   const handleLogin = async () => {
-    try {
-      const response = await axios.post(
-        process.env.EXPO_PUBLIC_API_URL + "/auth/student/login",
-        {
-          username: username,
-          password: password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      console.log(response.data, response.status);
-      if (response.status !== 200) {
-        console.error("Error:", error);
-        ToastAndroid.show(`Invalid Credentials`, ToastAndroid.SHORT);
-        return;
-      }
-      ToastAndroid.show("Login Successful", ToastAndroid.SHORT);
-      navigation.navigate("Home");
-    } catch (error) {
-      console.error("Error:", error);
-      ToastAndroid.show("Login Failed", ToastAndroid.SHORT);
-    }
+    navigation.navigate("Home");
   };
+
+  // const handleLogin = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       process.env.EXPO_PUBLIC_API_URL + "/auth/student/login",
+  //       {
+  //         username: username,
+  //         password: password,
+  //       },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     console.log(response.data, response.status);
+  //     if (response.status !== 200) {
+  //       console.error("Error:", error);
+  //       ToastAndroid.show(`Invalid Credentials`, ToastAndroid.SHORT);
+  //       return;
+  //     }
+  //     ToastAndroid.show("Login Successful", ToastAndroid.SHORT);
+  //     navigation.navigate("Home");
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     ToastAndroid.show("Login Failed", ToastAndroid.SHORT);
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
