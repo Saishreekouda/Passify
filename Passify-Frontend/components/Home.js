@@ -3,8 +3,6 @@ import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { Image, StyleSheet, Text, View, ScrollView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import Splash from "./components/Splash";
-import Login from "./components/Login";
 import home from "./assets/home.png";
 
 export default function Home() {
@@ -43,11 +41,8 @@ export default function Home() {
       dateOfEvent: "",
       destination: "",
       transport: "",
-      nowTime: "",
       outTime: "",
       issuedBy: "",
-      username: "",
-      password: "",
     });
   };
 
@@ -88,13 +83,7 @@ export default function Home() {
             onChangeText={(text) => handleInputChange("transport", text)}
             left={<TextInput.Icon icon="car" />}
           />
-          <TextInput
-            style={styles.input}
-            placeholder="Now Time"
-            value={formData.nowTime}
-            onChangeText={(text) => handleInputChange("nowTime", text)}
-            left={<TextInput.Icon icon="clock" />}
-          />
+
           <TextInput
             style={styles.input}
             placeholder="Out Time"
