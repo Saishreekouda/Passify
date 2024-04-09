@@ -2,7 +2,7 @@
 import express from "express";
 import { verifyGuardToken } from "../middlewares/authMiddleware_Guard.js";
 import { getGuard } from "../controllers/guard.controller.js";
-import { getInvalidOutpassesForGuard } from "../controllers/guard.controller.js";
+import { getInvalidOutpassesForGuard } from "../controllers/outpass.controller.js";
 
 const router = express.Router();
 

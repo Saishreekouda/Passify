@@ -101,3 +101,20 @@ export const updateStatus = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
+export const getInvalidOutpassesForGuard = async (req, res) => {
+  try {
+    const admin = await Admin.findOne({ username: req.username });
+
+    const invalidOutpasses = await Outpass.find({
+      $and: [
+        { $or: [{ status: "Invalid" }] }
+      ],
+    });
+
+    return res.status(200).json({ data: invalidOutpasses });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
