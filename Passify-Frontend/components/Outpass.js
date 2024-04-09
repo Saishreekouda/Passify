@@ -5,7 +5,9 @@ import { Button, Chip } from 'react-native-paper';
 import Header from "./Header";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-export default function Outpass({dateOfEvent, destination, transport, outTime, issuedBy, purpose, issueDate, issueTime, status}) {
+export default function Outpass({route, navigation}) {
+    const { destination, date, transport, time, name, rollno, purpose, status, issuedBy, issueDate, issueTime } = route.params;
+    console.log(route.params);
     const getStatusColor = (status) => {
         switch (status) {
           case "Pending":
@@ -22,17 +24,17 @@ export default function Outpass({dateOfEvent, destination, transport, outTime, i
       };
   return (
     <View style={styles.container}>
-      <Header title="View Outpass Details" />
+      {/* <Header title="View Outpass Details" /> */}
       <View style={styles.card}>
         <View style={styles.cardTop}>
           <Text style={styles.title}>{destination}</Text>
           <Chip style={[styles.chip, {backgroundColor: getStatusColor(status)}]} textStyle={styles.chipText}>{status}</Chip>
         </View>
         <View style={styles.detailsContainer}>
-          <DetailRow label="Date" icon="calendar" text={dateOfEvent} />
-          <DetailRow label="Destination" icon="map-marker" text={destination} />
+          <DetailRow label="Date" icon="calendar" text={date} />
+          {/* <DetailRow label="Destination" icon="map-marker" text={destination} /> */}
           <DetailRow label="Transport" icon="bus" text={transport} />
-          <DetailRow label="Out Time" icon="clock-o" text={outTime} />
+          <DetailRow label="Out Time" icon="clock-o" text={time} />
           <DetailRow label="Purpose of Visit" icon="user" text={purpose} />
         </View>
         <View style={[styles.issuedBy, {marginTop:20}]}>
@@ -114,7 +116,7 @@ const styles = StyleSheet.create({
   },
   issuedBy: {
     position: "absolute",
-    bottom: 90,
+    bottom: 80,
     right: 12,
   },
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
-import Navbar from '../components/Navbar';
+import Navbar from './Navbar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const ProfileScreen = () => {
