@@ -46,7 +46,7 @@ mongoose
     console.log("Database connected successfully");
     app.listen(
       process.env.PORT ? process.env.PORT : 8080,
-      process.env.HOST ? process.env.HOST : "127.0.0.1",
+      process.env.HOST ? process.env.HOST : "0.0.0.0",
       console.log(
         `listening on http://localhost:${
           process.env.PORT ? process.env.PORT : 8080
