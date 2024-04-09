@@ -1,3 +1,4 @@
+
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
 import Splash from "./components/Splash";
@@ -7,10 +8,17 @@ import ApplicationsPage from "./components/ApplicationsPage";
 import ProfileScreen from "./components/Profile";
 
 
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View } from 'react-native';
+import Navbar from './components/Navbar';
+// import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 export default function App() {
   return (
+
   <ProfileScreen/>
+   
+  
   );
 }
 
