@@ -8,12 +8,19 @@ import mongoose from "mongoose";
 import loginRouter from "./routes/auth.route.js";
 import studentRouter from "./routes/student.route.js";
 import adminRouter from "./routes/admin.route.js";
+import outpassRouter from "./routes/outpass.route.js";
 
 dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -29,6 +36,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/v1/auth", loginRouter);
 app.use("/api/v1/student", studentRouter);
 app.use("/api/v1/admin", adminRouter);
+app.use("/api/v1/", outpassRouter);
 
 mongoose
   .connect(process.env.MONGO_CONNECTION_URL)
