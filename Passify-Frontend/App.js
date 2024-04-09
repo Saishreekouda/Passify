@@ -4,16 +4,13 @@ import Splash from "./components/Splash";
 import Login from "./components/Login";
 import Application from "./components/Application";
 import ApplicationsPage from "./components/ApplicationsPage";
+import ProfileScreen from "./components/Profile";
+
 
 
 export default function App() {
   return (
-    // <View style={styles.container}>
-
-    // <Text>Open up App.js to start working on your app!</Text>
-    // <ApplicationsPage />
-    <Login />
-    // </View>
+  <ProfileScreen/>
   );
 }
 
