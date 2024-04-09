@@ -1,8 +1,10 @@
-import express from "express";
+// student.route.js
+import express from 'express';
+import { getStudent } from '../controllers/student.controller.js';
+import { verifyToken } from '../middlewares/authMiddleware_Student.js';
+
 const router = express.Router();
 
-import { getStudent } from "../controllers/student.controller.js";
-
-router.get("/profile", getStudent);
+router.get('/profile', verifyToken, getStudent);
 
 export default router;
