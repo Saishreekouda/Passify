@@ -25,46 +25,46 @@ export default function Login() {
   const [isLoading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  const handleLogin = async () => {
-    setLoading(true);
-
-    try {
-      const response = await axios.get(
-        "http://192.168.123.191:3001/api/v1/test"
-      );
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-    setLoading(false);
-  };
-
   // const handleLogin = async () => {
-  //   try {
-  //     // console.log(username, password)
-  //     const response = await axios.post(
-  //       "http://localhost:3001/api/v1/auth/student/login",
-  //       {
-  //         username: username,
-  //         password: password,
-  //       },
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-  //     console.log(response);
-  //     if (!response.ok) {
-  //       throw new Error("Failed to login");
-  //     }
+  //   setLoading(true);
 
-  //     navigation.navigate("Home");
+  //   try {
+  //     const response = await axios.get(
+  //       "http://192.168.123.191:3001/api/v1/test"
+  //     );
+  //     console.log(response.data);
   //   } catch (error) {
-  //     console.error("Error:", error);
-  //     Alert.alert("Error", "Failed to login. Please try again.");
+  //     console.error(error);
   //   }
+  //   setLoading(false);
   // };
+
+  const handleLogin = async () => {
+    try {
+      console.log(username, password);
+      const response = await axios.post(
+        "http://192.168.123.191:3001/api/v1/auth/student/login",
+        {
+          username: username,
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      // console.log(response.data);
+      if (!response.status === 200) {
+        throw new Error("Failed to login");
+      }
+
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert("Error", "Failed to login. Please try again.");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -111,6 +111,14 @@ export default function Login() {
           </View>
         )}
 
+        
+
+        <View style={styles.buttonView}>
+          <Pressable style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>LOGIN</Text>
+          </Pressable>
+        </View>
+
         {isStudentLogin && (
           <View style={styles.toggleButtonView}>
             <Text style={styles.toggleText}>Student</Text>
@@ -122,12 +130,6 @@ export default function Login() {
             />
           </View>
         )}
-
-        <View style={styles.buttonView}>
-          <Pressable style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>LOGIN</Text>
-          </Pressable>
-        </View>
       </SafeAreaView>
      
     </KeyboardAvoidingView>
