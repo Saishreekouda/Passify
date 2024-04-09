@@ -1,19 +1,32 @@
 import React from 'react';
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import { Chip } from 'react-native-paper';
+import { Button, Chip } from 'react-native-paper';
 import Header from "./Header";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-export default function Outpass({dateOfEvent, destination, transport, outTime, issuedBy, purpose, issueDate, issueTime,tag}) {
-
+export default function Outpass({dateOfEvent, destination, transport, outTime, issuedBy, purpose, issueDate, issueTime, status}) {
+    const getStatusColor = (status) => {
+        switch (status) {
+          case "Pending":
+            return "orange";
+          case "Accepted":
+            return "green";
+          case "Rejected":
+            return "red";
+          case "Invalid":
+            return "blue";
+          default:
+            return "black";
+        }
+      };
   return (
     <View style={styles.container}>
       <Header title="View Outpass Details" />
       <View style={styles.card}>
         <View style={styles.cardTop}>
           <Text style={styles.title}>{destination}</Text>
-          <Chip style={styles.chip} textStyle={styles.chipText}>{tag}</Chip>
+          <Chip style={[styles.chip, {backgroundColor: getStatusColor(status)}]} textStyle={styles.chipText}>{status}</Chip>
         </View>
         <View style={styles.detailsContainer}>
           <DetailRow label="Date" icon="calendar" text={dateOfEvent} />
@@ -27,9 +40,13 @@ export default function Outpass({dateOfEvent, destination, transport, outTime, i
             <Text style={{color:"white", padding:4}}>Issue Date: {issueDate}</Text>
             <Text style={{color:"white", padding:4}}>Issue Time: {issueTime}</Text>
         </View>
-        
+        <View style={{flexDirection:"row", justifyContent:'center', alignItems:'center', marginTop:32}}> 
+        <Button style={{borderColor: 'green', marginRight:48}} textColor='green' mode="outlined" icon="check"> Accept </Button>
+        <Button style={{borderColor: 'red'}} textColor='red' mode="outlined" icon="close"> Reject </Button>
       </View>
       <StatusBar style="auto" />
+      </View>
+     
     </View>
   );
 }
@@ -43,6 +60,7 @@ const DetailRow = ({ label, icon, text }) => (
     </View>
   </View>
 );
+
 
 const styles = StyleSheet.create({
   container: {
@@ -68,9 +86,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
-  chip: {
-    backgroundColor: "#4caf50",
-  },
+
   chipText: {
     color: "#fff",
   },
@@ -98,7 +114,7 @@ const styles = StyleSheet.create({
   },
   issuedBy: {
     position: "absolute",
-    bottom: 18,
+    bottom: 90,
     right: 12,
   },
 });
