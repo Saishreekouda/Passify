@@ -1,14 +1,9 @@
 import React, { useState, useEffect } from "react";
 import {
-  Alert,
-  Image,
-  Pressable,
-  SafeAreaView,
+  View,
   StyleSheet,
   Text,
-  TextInput,
-  View,
-  Switch,
+  Pressable,
   ScrollView,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -133,7 +128,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    paddingTop: 0,
+    padding: 0,
   },
 
   title: {
@@ -141,6 +136,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "left",
     paddingVertical: 40,
+    marginLeft:32,
     color: "#370556",
+  },
+  navbar: {
+    marginTop:210,
+    width:400
   },
 });

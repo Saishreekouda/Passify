@@ -102,7 +102,7 @@ export default function Home() {
         </View>
       </ScrollView>
 
-      <Navbar />
+      <Navbar navigation={navigation} />
     </View>
   );
 }

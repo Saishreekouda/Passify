@@ -46,6 +46,7 @@ export default function Login() {
   // };
 
   const handleLogin = async () => {
+    console.log("hello")
     try {
       const role = isStudentLogin ? "student" : "admin";
       const response = await axios.post(
