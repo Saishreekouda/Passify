@@ -16,9 +16,7 @@ export default function App() {
     <SafeAreaProvider>
     {/* <View style={styles.container}> */}
       
-      <Outpass
-      dateOfEvent="12-03-2024" destination="Pune" transport="Bus" outTime="6: 00pm" issuedBy="Kundu Ma'am" purpose="Party" issueDate="1-02-2024" issueTime="4:00pm" tag="Accepted"
-      />
+      <ApplicationsPage/>
     {/* </View> */}
    </SafeAreaProvider>
   
