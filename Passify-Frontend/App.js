@@ -12,11 +12,13 @@ import Application from "./components/Application";
 import ApplicationsPage from "./components/ApplicationsPage";
 import Profile from "./components/Profile";
 import Home from "./components/Home";
+import ProfileScreen from "./components/Profile";
 
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
+    // <ProfileScreen/>
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
