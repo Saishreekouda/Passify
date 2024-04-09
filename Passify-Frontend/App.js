@@ -10,7 +10,7 @@ import Splash from "./components/Splash";
 import Login from "./components/Login";
 import Application from "./components/Application";
 import ApplicationsPage from "./components/ApplicationsPage";
-import ProfileScreen from "./components/Profile";
+import Profile from "./components/Profile";
 import Home from "./components/Home";
 
 const Stack = createStackNavigator();
@@ -23,7 +23,8 @@ export default function App() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="Application" component={Application} />
         <Stack.Screen name="ApplicationsPage" component={ApplicationsPage} />
-        <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
+        <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="Outpass" component={Outpass} initialParams={{}}/>
         <Stack.Screen name="Home" component={Home} />
       </Stack.Navigator>
       <StatusBar style="auto" />

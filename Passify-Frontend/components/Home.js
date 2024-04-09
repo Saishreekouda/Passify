@@ -8,6 +8,8 @@ import { Alert } from "react-native";
 
 import home from "../assets/home.png";
 import { useNavigation } from "@react-navigation/native";
+import Navbar from "./Navbar";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 export default function Home() {
@@ -25,20 +27,6 @@ export default function Home() {
   };
 
   const handleSubmit = () => {
-    // if (
-    //   !formData.dateOfEvent.trim() ||
-    //   !formData.destination.trim() ||
-    //   !formData.transport.trim() ||
-    //   !formData.nowTime.trim() ||
-    //   !formData.outTime.trim() ||
-    //   !formData.issuedBy.trim() ||
-    //   !formData.username.trim() ||
-    //   !formData.password.trim()
-    // ) {
-    //   Alert.alert("Error", "Please fill in all fields");
-    //   return;
-    // }
-
     console.log("Submitted:", formData);
 
     setFormData({
@@ -53,14 +41,14 @@ export default function Home() {
   };
 
   return (
-    <>
-      <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <Text style={styles.title}>Create New Outpass</Text>
 
         <Image source={home} style={styles.image} />
 
         <View style={styles.inputView}>
-          <TextInput
+        <TextInput
             style={styles.input}
             placeholder="Name"
             value={formData.name}
@@ -104,12 +92,19 @@ export default function Home() {
             onChangeText={(text) => handleInputChange("issuedBy", text)}
             left={<TextInput.Icon icon="office-building" />}
           />
+     
+
+          <Button mode="contained" onPress={handleSubmit} style={styles.button}>
+            Submit
+          </Button>
         </View>
-        <Button mode="contained" onPress={handleSubmit} style={styles.button}>
-          Submit
-        </Button>
       </ScrollView>
-    </>
+
+
+
+      <Navbar />
+ 
+    </View>
   );
 }
 
@@ -117,16 +112,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+  },
+  scrollViewContent: {
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "center",
     paddingTop: StatusBar.currentHeight,
   },
   image: {
+    marginTop: 0,
     width: 200,
     height: 200,
   },
   title: {
     fontSize: 20,
+    marginTop:0,
     fontWeight: "bold",
     color: "#370556",
   },
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   inputView: {
     width: "70%",
   },
-  button:{
+  button: {
     marginTop: 20,
   }
 });

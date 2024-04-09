@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Image,
@@ -69,8 +69,11 @@ export default function Login() {
   };
 
   return (
+    <View style={styles.container}>
+
+   <ScrollView>
     <KeyboardAvoidingView
-      style={styles.container}
+      
       behavior={Platform.OS === "ios" ? "padding" : null}
     >
       <SafeAreaView style={styles.inner}>
@@ -97,11 +100,6 @@ export default function Login() {
           />
         </View>
 
-        <View style={styles.buttonView}>
-          <Pressable style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>LOGIN</Text>
-          </Pressable>
-        </View>
 
         {!isStudentLogin && (
           <View style={styles.toggleButtonView}>
@@ -115,6 +113,14 @@ export default function Login() {
           </View>
         )}
 
+        
+
+        <View style={styles.buttonView}>
+          <Pressable style={styles.button} onPress={handleLogin}>
+            <Text style={styles.buttonText}>LOGIN</Text>
+          </Pressable>
+        </View>
+
         {isStudentLogin && (
           <View style={styles.toggleButtonView}>
             <Text style={styles.toggleText}>Student</Text>
@@ -127,7 +133,11 @@ export default function Login() {
           </View>
         )}
       </SafeAreaView>
+     
     </KeyboardAvoidingView>
+    </ScrollView>
+    
+    </View>
   );
 }
 
@@ -164,7 +174,7 @@ const styles = StyleSheet.create({
     borderColor: "#370556",
     borderWidth: 1,
     borderRadius: 7,
-    marginBottom: 15,
+    marginBottom: 12,
     width: "100%",
   },
   button: {
@@ -184,14 +194,15 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     width: "100%",
-    marginBottom: 10,
+    marginBottom: 0,
   },
   toggleButtonView: {
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
     width: "100%",
-    marginTop: 10,
+    marginTop: 0,
+    marginBottom: 6,
   },
   toggleText: {
     fontSize: 16,
