@@ -15,7 +15,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import AsyncStorage  from "@react-native-async-storage/async-storage"; 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import axios from "axios";
 
@@ -29,8 +29,6 @@ export default function Login() {
   const [isLoading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-
- 
   // const handleLogin = async () => {
   //   setLoading(true);
 
@@ -43,6 +41,10 @@ export default function Login() {
   //     console.error(error);
   //   }
   //   setLoading(false);
+  // };
+
+  // const handleLogin = async () => {
+  //   navigation.navigate("Main");
   // };
 
   const handleLogin = async () => {
@@ -68,9 +70,9 @@ export default function Login() {
       }
       ToastAndroid.show("Login Successful", ToastAndroid.SHORT);
 
-      await AsyncStorage.setItem('role', isStudentLogin ? 'student' : 'admin');
-      await AsyncStorage.setItem('token', response.data.token);
-      navigation.navigate("Home");
+      await AsyncStorage.setItem("role", isStudentLogin ? "student" : "admin");
+      await AsyncStorage.setItem("token", response.data.token);
+      navigation.navigate("Main");
     } catch (error) {
       console.error("Error:", error);
       ToastAndroid.show("Login Failed", ToastAndroid.SHORT);
@@ -126,23 +128,21 @@ export default function Login() {
             )}
 
             {isStudentLogin && (
-                          <View style={styles.toggleButtonView}>
-                            <Text style={styles.toggleText}>Student</Text>
-                            <Switch
-                              trackColor={{ false: "lightgrey", true: "purple" }}
-                              thumbColor={"white"}
-                              onValueChange={() => setIsStudentLogin(!isStudentLogin)}
-                              value={isStudentLogin}
-                            />
-                          </View>
-                        )}
+              <View style={styles.toggleButtonView}>
+                <Text style={styles.toggleText}>Student</Text>
+                <Switch
+                  trackColor={{ false: "lightgrey", true: "purple" }}
+                  thumbColor={"white"}
+                  onValueChange={() => setIsStudentLogin(!isStudentLogin)}
+                  value={isStudentLogin}
+                />
+              </View>
+            )}
             <View style={styles.buttonView}>
               <Pressable style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>LOGIN</Text>
               </Pressable>
             </View>
-
-            
           </SafeAreaView>
         </KeyboardAvoidingView>
       </ScrollView>

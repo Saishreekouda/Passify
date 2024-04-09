@@ -10,8 +10,7 @@ import home from "../assets/home.png";
 import { useNavigation } from "@react-navigation/native";
 import Navbar from "./Navbar";
 import { SafeAreaView } from "react-native-safe-area-context";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home() {
   const navigation = useNavigation();
@@ -29,8 +28,8 @@ export default function Home() {
 
   const retrieveStudentLogin = async () => {
     try {
-      const role = await AsyncStorage.getItem('role');
-      const token = await AsyncStorage.getItem('token');
+      const role = await AsyncStorage.getItem("role");
+      const token = await AsyncStorage.getItem("token");
       console.log("Role: ", role);
       console.log("Token: ", token);
     } catch (error) {
@@ -40,8 +39,7 @@ export default function Home() {
   retrieveStudentLogin();
   const handleSubmit = () => {
     console.log("Submitted:", formData);
-    
-    
+
     setFormData({
       destination: "",
       outDate: "",
@@ -105,7 +103,7 @@ export default function Home() {
         </View>
       </ScrollView>
 
-      <Navbar />
+      {/* <Navbar /> */}
     </View>
   );
 }
