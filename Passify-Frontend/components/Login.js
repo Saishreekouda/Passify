@@ -9,78 +9,124 @@ import {
   TextInput,
   View,
   Switch,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import axios from 'axios';
 
 const logo = require("../assets/Login_Image.png");
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isStudentLogin, setIsStudentLogin] = useState(false); 
+  const [isStudentLogin, setIsStudentLogin] = useState(false);
+  const navigation = useNavigation();
+
+  const handleLogin = async () => {
+    try {
+      // console.log(username, password)
+      const response = await axios.post(
+        "http://localhost:3001/api/v1/auth/student/login",
+        {
+          username: username,
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
+      if (!response.ok) {
+        throw new Error("Failed to login");
+      }
+  
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Error:", error);
+      Alert.alert("Error", "Failed to login. Please try again.");
+    }
+  };
+  
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Image source={logo} style={styles.image} resizeMode="contain" />
-      <Text style={styles.title}>Login</Text>
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.input}
-          placeholder="USERNAME"
-          value={username}
-          onChangeText={setUsername}
-          autoCorrect={false}
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="PASSWORD"
-          secureTextEntry
-          value={password}
-          onChangeText={setPassword}
-          autoCorrect={false}
-          autoCapitalize="none"
-        />
-      </View>
-
-      <View style={styles.buttonView}>
-        <Pressable
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>LOGIN</Text>
-        </Pressable>
-      </View>
-
-      {!isStudentLogin && (
-        <View style={styles.toggleButtonView}>
-          <Text style={styles.toggleText}>Admin</Text>
-          <Switch
-            trackColor={{ false: "lightgrey", true: "purple" }}
-            thumbColor={"white"}
-            onValueChange={() => setIsStudentLogin(!isStudentLogin)}
-            value={isStudentLogin}
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+    >
+      <SafeAreaView style={styles.inner}>
+        <Image source={logo} style={styles.image} resizeMode="contain" />
+        <Text style={styles.title}>Login</Text>
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.input}
+            placeholder="USERNAME"
+            value={username}
+            onChangeText={setUsername}
+            autoCorrect={false}
+            autoCapitalize="none"
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="PASSWORD"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+            autoCorrect={false}
+            autoCapitalize="none"
           />
         </View>
-      )}
 
-      {isStudentLogin && (
-        <View style={styles.toggleButtonView}>
-          <Text style={styles.toggleText}>Student</Text>
-          <Switch
-            trackColor={{ false: "lightgrey", true: "purple" }}
-            thumbColor={"white"}
-            onValueChange={() => setIsStudentLogin(!isStudentLogin)}
-            value={isStudentLogin}
-          />
+        <View style={styles.buttonView}>
+          <Pressable
+            style={styles.button}
+            onPress={handleLogin} 
+          >
+            <Text style={styles.buttonText}>LOGIN</Text>
+          </Pressable>
         </View>
-      )}
-    </SafeAreaView>
+
+        {!isStudentLogin && (
+          <View style={styles.toggleButtonView}>
+            <Text style={styles.toggleText}>Admin</Text>
+            <Switch
+              trackColor={{ false: "lightgrey", true: "purple" }}
+              thumbColor={"white"}
+              onValueChange={() => setIsStudentLogin(!isStudentLogin)}
+              value={isStudentLogin}
+            />
+          </View>
+        )}
+
+        {isStudentLogin && (
+          <View style={styles.toggleButtonView}>
+            <Text style={styles.toggleText}>Student</Text>
+            <Switch
+              trackColor={{ false: "lightgrey", true: "purple" }}
+              thumbColor={"white"}
+              onValueChange={() => setIsStudentLogin(!isStudentLogin)}
+              value={isStudentLogin}
+            />
+          </View>
+        )}
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: "white",
+  },
+  inner: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
-    paddingTop: 90,
+    paddingHorizontal: 40,
+    paddingTop: 40,
   },
   image: {
     height: 290,
@@ -95,7 +141,6 @@ const styles = StyleSheet.create({
   },
   inputView: {
     width: "100%",
-    paddingHorizontal: 40,
     marginBottom: 5,
   },
   input: {
@@ -105,6 +150,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 7,
     marginBottom: 15,
+    width: "100%",
   },
   button: {
     backgroundColor: "#370556",
@@ -114,6 +160,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: "center",
     justifyContent: "center",
+    width: "100%",
   },
   buttonText: {
     color: "white",
@@ -122,7 +169,6 @@ const styles = StyleSheet.create({
   },
   buttonView: {
     width: "100%",
-    paddingHorizontal: 40,
     marginBottom: 10,
   },
   toggleButtonView: {
@@ -134,7 +180,7 @@ const styles = StyleSheet.create({
   },
   toggleText: {
     fontSize: 16,
-    textAlign:"left",
+    textAlign: "left",
     fontWeight: "bold",
     color: "purple",
   },

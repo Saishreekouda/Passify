@@ -22,7 +22,6 @@ export default function ApplicationsPage() {
   return (
     <View style={{ paddingBottom: 20 }}>
       <ScrollView contentContainerStyle={styles.container}>
-        {/* <Image source={logo} style={styles.image} resizeMode="contain" /> */}
         <Text style={styles.title}>My Applications</Text>
         <Application
           destination={"Civil Lines"}

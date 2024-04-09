@@ -1,21 +1,31 @@
 import { StatusBar } from 'expo-status-bar';
-import {Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import logo from '../assets/logo.png';
-
 import React, { useEffect } from 'react';
 
-
 export default function Splash({ navigation }) {
-//   useEffect(() => {
-//     setTimeout(() => {
-//       navigation.replace('Login'); 
-//     }, 2000);
-//   }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation.navigate('Login');
+    }, 2000); 
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handlePress = () => {
+    navigation.navigate('Login');
+  };
 
   return (
-    <View style={styles.container}>
-      <Image source={logo} />
-    </View>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={handlePress}
+      activeOpacity={1} 
+    >
+      <View style={styles.container}>
+        <Image source={logo} />
+      </View>
+    </TouchableOpacity>
   );
 }
 

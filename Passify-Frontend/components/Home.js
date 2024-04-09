@@ -3,9 +3,10 @@ import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { Image, StyleSheet, Text, View, ScrollView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import Splash from "./components/Splash";
-import Login from "./components/Login";
-import home from "./assets/home.png";
+import home from "../assets/home.png"
+import Splash from "./Splash";
+import Login from "./Login";
+
 
 export default function Home() {
   const [formData, setFormData] = useState({
