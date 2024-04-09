@@ -46,7 +46,7 @@ export async function loginAsStudent(req, res) {
         semester: semester,
       });
 
-      const token = generateToken(student_id);
+      const token = generateToken(student_id, "student");
       res.status(200).json({ token, user: newStudent });
     } else {
       const isMatch = verifyUser({
@@ -56,7 +56,7 @@ export async function loginAsStudent(req, res) {
       if (!isMatch) {
         res.status(401).json({ message: "Username or Password is Incorrect." });
       }
-      const token = generateToken(username);
+      const token = generateToken(username, "student");
       res.status(200).json({ token, user: student });
     }
   } catch (err) {
@@ -93,7 +93,7 @@ export async function signUpAsAdmin(req, res) {
     });
 
     // Generate JWT token for the new admin
-    const token = generateToken(username);
+    const token = generateToken(username, "admin");
     res.status(201).json({ token, user: newAdmin });
   } catch (err) {
     console.error(err);
@@ -122,7 +122,7 @@ export async function loginAsAdmin(req, res) {
     }
 
     // Generate JWT token for the admin
-    const token = generateToken(username);
+    const token = generateToken(username, "admin");
     res.status(200).json({ token, user: admin });
   } catch (err) {
     console.error(err);
@@ -130,6 +130,8 @@ export async function loginAsAdmin(req, res) {
   }
 }
 
-const generateToken = (username) => {
-  return jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: "1d" });
+const generateToken = (username, role) => {
+  return jwt.sign({ username, role }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
+  });
 };

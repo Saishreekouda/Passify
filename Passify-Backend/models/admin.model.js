@@ -15,11 +15,6 @@ const adminSchema = new Schema({
     type: String,
     required: true,
   },
-  role: {
-    type: String,
-    enum: ["warden", "guard"],
-    required: true,
-  },
 });
 
 export default model("Admin", adminSchema);

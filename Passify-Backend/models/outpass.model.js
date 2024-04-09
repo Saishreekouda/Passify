@@ -1,47 +1,44 @@
 import { Schema, model } from "mongoose";
 
 const outpassSchema = new Schema({
-  date: {
-    type: Date,
-    required: true
+  student: {
+    ref: "Student",
+    type: Schema.Types.ObjectId,
+    required: true,
+  },
+  code: {
+    type: String,
+    unique: true,
+    required: true,
   },
   destination: {
     type: String,
-    required: true
+    required: true,
+  },
+  outDateTime: {
+    type: Date,
+    required: true,
   },
   transport: {
     type: String,
-    required: true
+    required: true,
   },
-  nowTime: {
-    type: Date,
-    required: true
-  },
-  outTime: {
-    type: Date,
-    required: true
-  },
-  issuedBy: {
+  purpose: {
     type: String,
-    required: true
-  },
-  name: {
-    type: String,
-    required: true
-  },
-  rollNumber: {
-    type: String,
-    required: true
-  },
-  semester: {
-    type: String,
-    required: true
+    required: true,
   },
   state: {
     type: String,
-    enum: ['accepted', 'pending', 'used', 'rejected'],
-    default: 'pending'
-  }
+    enum: ["Accepted", "Pending", "Used", "Rejected"],
+    default: "Pending",
+  },
+  issueDateTime: {
+    type: Date,
+  },
+  issuedBy: {
+    type: Schema.Types.ObjectId,
+    ref: "Admin",
+  },
 });
 
 export default model("Outpass", outpassSchema);
