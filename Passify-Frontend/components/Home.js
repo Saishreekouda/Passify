@@ -11,16 +11,15 @@ import { useNavigation } from "@react-navigation/native";
 import Navbar from "./Navbar";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-
 export default function Home() {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
     name: "",
-    dateOfEvent: "", 
+    outDate: "",
     destination: "",
     transport: "",
     outTime: "",
-    issuedBy: ""
+    issuedBy: "",
   });
   const handleInputChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
@@ -30,11 +29,11 @@ export default function Home() {
     console.log("Submitted:", formData);
 
     setFormData({
-      dateOfEvent: "",
       destination: "",
-      transport: "",
+      outDate: "",
       outTime: "",
-      issuedBy: "",
+      transport: "",
+      purpose: "",
     });
 
     navigation.navigate("ApplicationsPage");
@@ -48,18 +47,11 @@ export default function Home() {
         <Image source={home} style={styles.image} />
 
         <View style={styles.inputView}>
-        <TextInput
-            style={styles.input}
-            placeholder="Name"
-            value={formData.name}
-            onChangeText={(text) => handleInputChange("name", text)}
-            left={<TextInput.Icon icon="account" />}
-          />
           <TextInput
             style={styles.input}
             placeholder="Date of Event"
-            value={formData.dateOfEvent}
-            onChangeText={(text) => handleInputChange("dateOfEvent", text)}
+            value={formData.outDate}
+            onChangeText={(text) => handleInputChange("outDate", text)}
             left={<TextInput.Icon icon="calendar" />}
           />
 
@@ -87,12 +79,11 @@ export default function Home() {
           />
           <TextInput
             style={styles.input}
-            placeholder="Issued By"
-            value={formData.issuedBy}
-            onChangeText={(text) => handleInputChange("issuedBy", text)}
-            left={<TextInput.Icon icon="office-building" />}
+            placeholder="Name"
+            value={formData.name}
+            onChangeText={(text) => handleInputChange("name", text)}
+            left={<TextInput.Icon icon="account" />}
           />
-     
 
           <Button mode="contained" onPress={handleSubmit} style={styles.button}>
             Submit
@@ -100,10 +91,7 @@ export default function Home() {
         </View>
       </ScrollView>
 
-
-
       <Navbar />
- 
     </View>
   );
 }
@@ -126,18 +114,18 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    marginTop:0,
+    marginTop: 0,
     fontWeight: "bold",
     color: "#370556",
   },
   input: {
     marginTop: 2,
-    marginBottom: 2, 
+    marginBottom: 2,
   },
   inputView: {
     width: "70%",
   },
   button: {
     marginTop: 20,
-  }
+  },
 });

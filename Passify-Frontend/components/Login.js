@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ToastAndroid,
+  ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
@@ -70,73 +71,66 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
+      <ScrollView>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : null}
+        >
+          <SafeAreaView style={styles.inner}>
+            {isLoading && <Text> Loading ... </Text>}
+            <Image source={logo} style={styles.image} resizeMode="contain" />
+            <Text style={styles.title}>Login</Text>
+            <View style={styles.inputView}>
+              <TextInput
+                style={styles.input}
+                placeholder="USERNAME"
+                value={username}
+                onChangeText={setUsername}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="PASSWORD"
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+                autoCorrect={false}
+                autoCapitalize="none"
+              />
+            </View>
 
-   <ScrollView>
-    <KeyboardAvoidingView
-      
-      behavior={Platform.OS === "ios" ? "padding" : null}
-    >
-      <SafeAreaView style={styles.inner}>
-        {isLoading && <Text> Loading ... </Text>}
-        <Image source={logo} style={styles.image} resizeMode="contain" />
-        <Text style={styles.title}>Login</Text>
-        <View style={styles.inputView}>
-          <TextInput
-            style={styles.input}
-            placeholder="USERNAME"
-            value={username}
-            onChangeText={setUsername}
-            autoCorrect={false}
-            autoCapitalize="none"
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="PASSWORD"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-            autoCorrect={false}
-            autoCapitalize="none"
-          />
-        </View>
+            {!isStudentLogin && (
+              <View style={styles.toggleButtonView}>
+                <Text style={styles.toggleText}>Admin</Text>
+                <Switch
+                  trackColor={{ false: "lightgrey", true: "purple" }}
+                  thumbColor={"white"}
+                  onValueChange={() => setIsStudentLogin(!isStudentLogin)}
+                  value={isStudentLogin}
+                />
+              </View>
+            )}
 
+            <View style={styles.buttonView}>
+              <Pressable style={styles.button} onPress={handleLogin}>
+                <Text style={styles.buttonText}>LOGIN</Text>
+              </Pressable>
+            </View>
 
-        {!isStudentLogin && (
-          <View style={styles.toggleButtonView}>
-            <Text style={styles.toggleText}>Admin</Text>
-            <Switch
-              trackColor={{ false: "lightgrey", true: "purple" }}
-              thumbColor={"white"}
-              onValueChange={() => setIsStudentLogin(!isStudentLogin)}
-              value={isStudentLogin}
-            />
-          </View>
-        )}
-
-        
-
-        <View style={styles.buttonView}>
-          <Pressable style={styles.button} onPress={handleLogin}>
-            <Text style={styles.buttonText}>LOGIN</Text>
-          </Pressable>
-        </View>
-
-        {isStudentLogin && (
-          <View style={styles.toggleButtonView}>
-            <Text style={styles.toggleText}>Student</Text>
-            <Switch
-              trackColor={{ false: "lightgrey", true: "purple" }}
-              thumbColor={"white"}
-              onValueChange={() => setIsStudentLogin(!isStudentLogin)}
-              value={isStudentLogin}
-            />
-          </View>
-        )}
-      </SafeAreaView>
-     
-    </KeyboardAvoidingView>
-    </ScrollView>
-    
+            {isStudentLogin && (
+              <View style={styles.toggleButtonView}>
+                <Text style={styles.toggleText}>Student</Text>
+                <Switch
+                  trackColor={{ false: "lightgrey", true: "purple" }}
+                  thumbColor={"white"}
+                  onValueChange={() => setIsStudentLogin(!isStudentLogin)}
+                  value={isStudentLogin}
+                />
+              </View>
+            )}
+          </SafeAreaView>
+        </KeyboardAvoidingView>
+      </ScrollView>
     </View>
   );
 }
