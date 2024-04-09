@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { BottomNavigation, Text } from 'react-native-paper';
 
-const HomeRoute = () => <Text>Home</Text>;
+const HomeRoute = () => {null};
 
-const ApplicationsRoute = () => <Text>Applications</Text>;
+const ApplicationsRoute = () => {null};
 
-const ProfileRoute = () => <Text>Profile</Text>;
+const ProfileRoute = () => {null};
 
 const Navbar = () => {
   const [index, setIndex] = React.useState(0);

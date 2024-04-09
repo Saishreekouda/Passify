@@ -1,8 +1,5 @@
 // student.model.js
 import { Schema, model } from "mongoose";
-import outpassSchema from "./outpass.model.js";
-
-
 
 const studentSchema = new Schema({
   name: {
@@ -25,10 +22,6 @@ const studentSchema = new Schema({
   phone: {
     type: String,
   },
-  outpasses: [outpassSchema]
-
-  
-  
 });
 
 export default model("Student", studentSchema);
