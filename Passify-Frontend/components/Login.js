@@ -15,6 +15,8 @@ import {
   ScrollView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import AsyncStorage  from "@react-native-async-storage/async-storage"; 
+
 import axios from "axios";
 
 const logo = require("../assets/Login_Image.png");
@@ -27,37 +29,59 @@ export default function Login() {
   const [isLoading, setLoading] = useState(false);
   const navigation = useNavigation();
 
+
+ 
+  // const handleLogin = async () => {
+  //   setLoading(true);
+
+  //   try {
+  //     const response = await axios.get(
+  //       "http://192.168.123.191:3001/api/v1/test"
+  //     );
+  //     console.log(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  //   setLoading(false);
+  // };
+
   const handleLogin = async () => {
-    navigation.navigate("Home");
+    try {
+      const role = isStudentLogin ? "student" : "admin";
+      const response = await axios.post(
+        process.env.EXPO_PUBLIC_API_URL + `/auth/${role}/login`,
+        {
+          username: username,
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response.data, response.status);
+      if (response.status !== 200) {
+        console.error("Error:", error);
+        ToastAndroid.show(`Invalid Credentials`, ToastAndroid.SHORT);
+        return;
+      }
+      ToastAndroid.show("Login Successful", ToastAndroid.SHORT);
+
+      await AsyncStorage.setItem('role', isStudentLogin ? 'student' : 'admin');
+      await AsyncStorage.setItem('token', response.data.token);
+      navigation.navigate("Home");
+    } catch (error) {
+      console.error("Error:", error);
+      ToastAndroid.show("Login Failed", ToastAndroid.SHORT);
+    }
   };
 
-  // const handleLogin = async () => {
-  //   try {
-  //     const response = await axios.post(
-  //       process.env.EXPO_PUBLIC_API_URL + "/auth/student/login",
-  //       {
-  //         username: username,
-  //         password: password,
-  //       },
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-  //     console.log(response.data, response.status);
-  //     if (response.status !== 200) {
-  //       console.error("Error:", error);
-  //       ToastAndroid.show(`Invalid Credentials`, ToastAndroid.SHORT);
-  //       return;
-  //     }
-  //     ToastAndroid.show("Login Successful", ToastAndroid.SHORT);
-  //     navigation.navigate("Home");
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     ToastAndroid.show("Login Failed", ToastAndroid.SHORT);
-  //   }
-  // };
+  const toggleIsStudentLogin = () => {
+    const newValue = !isStudentLogin;
+    setIsStudentLogin(newValue);
+    AsyncStorage.setItem("isStudentLogin", JSON.stringify(newValue));
+  };
 
   return (
     <View style={styles.container}>
@@ -101,23 +125,24 @@ export default function Login() {
               </View>
             )}
 
+            {isStudentLogin && (
+                          <View style={styles.toggleButtonView}>
+                            <Text style={styles.toggleText}>Student</Text>
+                            <Switch
+                              trackColor={{ false: "lightgrey", true: "purple" }}
+                              thumbColor={"white"}
+                              onValueChange={() => setIsStudentLogin(!isStudentLogin)}
+                              value={isStudentLogin}
+                            />
+                          </View>
+                        )}
             <View style={styles.buttonView}>
               <Pressable style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>LOGIN</Text>
               </Pressable>
             </View>
 
-            {isStudentLogin && (
-              <View style={styles.toggleButtonView}>
-                <Text style={styles.toggleText}>Student</Text>
-                <Switch
-                  trackColor={{ false: "lightgrey", true: "purple" }}
-                  thumbColor={"white"}
-                  onValueChange={() => setIsStudentLogin(!isStudentLogin)}
-                  value={isStudentLogin}
-                />
-              </View>
-            )}
+            
           </SafeAreaView>
         </KeyboardAvoidingView>
       </ScrollView>
