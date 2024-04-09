@@ -10,16 +10,16 @@ import home from "../assets/home.png";
 import { useNavigation } from "@react-navigation/native";
 import Navbar from "./Navbar";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Home() {
   const navigation = useNavigation();
   const [formData, setFormData] = useState({
-    name: "",
-    outDate: "",
     destination: "",
-    transport: "",
+    outDate: "",
     outTime: "",
-    issuedBy: "",
+    transport: "",
+    purpose: "",
   });
   const handleInputChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
@@ -39,6 +39,18 @@ export default function Home() {
     navigation.navigate("ApplicationsPage");
   };
 
+  const retrieveStudentLogin = async () => {
+    try {
+      const role = await AsyncStorage.getItem('role');
+      const token = await AsyncStorage.getItem('token');
+      console.log("Role: ", role);
+      console.log("Token: ", token);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  retrieveStudentLogin();
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -49,18 +61,24 @@ export default function Home() {
         <View style={styles.inputView}>
           <TextInput
             style={styles.input}
-            placeholder="Date of Event"
-            value={formData.outDate}
-            onChangeText={(text) => handleInputChange("outDate", text)}
-            left={<TextInput.Icon icon="calendar" />}
-          />
-
-          <TextInput
-            style={styles.input}
             placeholder="Destination"
             value={formData.destination}
             onChangeText={(text) => handleInputChange("destination", text)}
             left={<TextInput.Icon icon="map-marker" />}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Out Date"
+            value={formData.outDate}
+            onChangeText={(text) => handleInputChange("outDate", text)}
+            left={<TextInput.Icon icon="calendar" />}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Out Time"
+            value={formData.outTime}
+            onChangeText={(text) => handleInputChange("outTime", text)}
+            left={<TextInput.Icon icon="clock" />}
           />
           <TextInput
             style={styles.input}
@@ -72,16 +90,9 @@ export default function Home() {
 
           <TextInput
             style={styles.input}
-            placeholder="Out Time"
-            value={formData.outTime}
-            onChangeText={(text) => handleInputChange("outTime", text)}
-            left={<TextInput.Icon icon="clock" />}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Name"
-            value={formData.name}
-            onChangeText={(text) => handleInputChange("name", text)}
+            placeholder="Purpose"
+            value={formData.purpose}
+            onChangeText={(text) => handleInputChange("purpose", text)}
             left={<TextInput.Icon icon="account" />}
           />
 
