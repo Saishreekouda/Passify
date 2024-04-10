@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  Text,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, Text, Pressable, ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Application from "./Application";
 import Navbar from "./Navbar";
@@ -20,26 +14,15 @@ export default function ApplicationsPage({ navigation }) {
   const [id, setId] = useState(0);
   const [sname, setName] = useState("");
   const [rollno, setRollno] = useState("");
-  const retrieveStudentLogin = async () => {
-    try {
-      console.log("Fetching applications")
-      const role = await AsyncStorage.getItem('role');
-      const token = await AsyncStorage.getItem('token');
-      console.log("Role: ", role);
-      console.log("Token: ", token);
-      return { role, token };
-    } catch (error) {
-      console.error(error);
-      return { role: null, token: null };
-    }
-  };
+  const [role, setRole] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
-      const { role, token } = await retrieveStudentLogin();
-      if (role && token) {
+      const { role: retrievedRole, token } = await retrieveStudentLogin();
+      if (retrievedRole && token) {
         try {
-          const response = await axios.get(process.env.EXPO_PUBLIC_API_URL + `/${role}/outpass`, {
+          setRole(retrievedRole);
+          const response = await axios.get(process.env.EXPO_PUBLIC_API_URL + `/${retrievedRole}/outpass`, {
             headers: {
               "Content-Type": "application/json",
               "Authorization": `Bearer ${token}`,
@@ -59,13 +42,27 @@ export default function ApplicationsPage({ navigation }) {
     fetchData();
   }, []);
 
+  const retrieveStudentLogin = async () => {
+    try {
+      console.log("Fetching applications")
+      const role = await AsyncStorage.getItem('role');
+      const token = await AsyncStorage.getItem('token');
+      console.log("Role: ", role);
+      console.log("Token: ", token);
+      return { role, token };
+    } catch (error) {
+      console.error(error);
+      return { role: null, token: null };
+    }
+  };
+
   const handlePress = (app) => {
     console.log("hello")
     navigation.navigate("Outpass", {
       outTime: app.outTime,
       destination: app.destination,
       transport: app.transport,
-      status:app.status,
+      status: app.status,
       date: app.outDate,
       name: sname,
       rollno: rollno,
@@ -76,31 +73,21 @@ export default function ApplicationsPage({ navigation }) {
       id: id,
     });
   }
-  // const handlePress = () => {
-  //   console.log("hello")
-  //   navigation.navigate("Outpass", {
-  //     time: "10:00 am",
-  //     destination: "Civs",
-  //     transport: "Bus",
-  //     status: "Pending",
-  //     date: "12th May 2024",
-  //     name: "John Doe",
-  //     rollno: "IIT2021009",
-  //     purpose: "Going Home",
-  //     issueTime: "6 pm",
-  //     issueDate: "12th May 2024",
-  //     issuedBy: "Dean",
-  //   });
-  // }
 
   const filteredApplications =
     value === "upcoming"
-      ? applications.filter(
+      ? role === "admin"
+        ? applications.filter((app) => app.status === "Pending")
+        : applications.filter(
           (app) => app.status === "Pending" || app.status === "Accepted"
         )
-      : applications.filter(
-          (app) => app.status === "Rejected" || app.status === "Invalid"
+      : role === "admin"
+        ? applications.filter(
+          (app) => app.status === "Rejected" || app.status === "Accepted"
+        )
+        : applications.filter((app) => app.status === "Rejected" || app.status === "Invalid"
         );
+
 
   return (
     <View style={styles.container}>
@@ -119,7 +106,7 @@ export default function ApplicationsPage({ navigation }) {
           </View>
 
           {filteredApplications.map((app, index) => (
-            <Pressable onPress={()=>{
+            <Pressable onPress={() => {
               handlePress(app);
             }} key={index}>
               <Application
@@ -153,11 +140,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "left",
     paddingVertical: 40,
-    marginLeft:32,
+    marginLeft: 32,
     color: "#370556",
   },
   navbar: {
-    marginTop:210,
-    width:400
+    marginTop: 210,
+    width: 400
   },
 });

@@ -10,7 +10,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-export default function Outpass({route, navigation}) {
+export default function Outpass({route}) {
     const { destination, date, transport, outTime, name, rollno, purpose, status, issuedBy, issueDate, issueTime } = route.params;
     let role="student";
     console.log(route.params);

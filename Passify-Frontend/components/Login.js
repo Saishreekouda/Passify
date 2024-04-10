@@ -16,6 +16,8 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AdminHome from  './AdminHome';
+
 
 import axios from "axios";
 
@@ -25,32 +27,14 @@ export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isStudentLogin, setIsStudentLogin] = useState(false);
-
   const [isLoading, setLoading] = useState(false);
   const navigation = useNavigation();
 
-  // const handleLogin = async () => {
-  //   setLoading(true);
-
-  //   try {
-  //     const response = await axios.get(
-  //       "http://192.168.123.191:3001/api/v1/test"
-  //     );
-  //     console.log(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  //   setLoading(false);
-  // };
-
-  // const handleLogin = async () => {
-  //   navigation.navigate("Main");
-  // };
-
   const handleLogin = async () => {
-    console.log("hello")
     try {
+      setLoading(true);
       const role = isStudentLogin ? "student" : "admin";
+      console.log(role);
       const response = await axios.post(
         process.env.EXPO_PUBLIC_API_URL + `/auth/${role}/login`,
         {
@@ -63,7 +47,8 @@ export default function Login() {
           },
         }
       );
-      console.log(response.data, response.status);
+      console.log("Response:", response.data); // Log response
+
       if (response.status !== 200) {
         console.error("Error:", error);
         ToastAndroid.show(`Invalid Credentials`, ToastAndroid.SHORT);
@@ -71,12 +56,17 @@ export default function Login() {
       }
       ToastAndroid.show("Login Successful", ToastAndroid.SHORT);
 
-      await AsyncStorage.setItem("role", isStudentLogin ? "student" : "admin");
+      await AsyncStorage.setItem("role", role);
       await AsyncStorage.setItem("token", response.data.token);
-      navigation.navigate("Main");
+
+      
+        navigation.navigate("Main");
+     
     } catch (error) {
       console.error("Error:", error);
       ToastAndroid.show("Login Failed", ToastAndroid.SHORT);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -120,7 +110,7 @@ export default function Login() {
               <View style={styles.toggleButtonView}>
                 <Text style={styles.toggleText}>Admin</Text>
                 <Switch
-                  trackColor={{ false: "lightgrey", true: "purple" }}
+                  trackColor={{ false: "blue", true: "purple" }}
                   thumbColor={"white"}
                   onValueChange={() => setIsStudentLogin(!isStudentLogin)}
                   value={isStudentLogin}
@@ -132,7 +122,7 @@ export default function Login() {
               <View style={styles.toggleButtonView}>
                 <Text style={styles.toggleText}>Student</Text>
                 <Switch
-                  trackColor={{ false: "lightgrey", true: "purple" }}
+                  trackColor={{ false: "blue", true: "purple" }}
                   thumbColor={"white"}
                   onValueChange={() => setIsStudentLogin(!isStudentLogin)}
                   value={isStudentLogin}
