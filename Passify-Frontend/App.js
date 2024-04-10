@@ -9,8 +9,7 @@ import Home from "./components/Home";
 import ProfileScreen from "./components/Profile";
 import ApplicationsPage from "./components/ApplicationsPage";
 import Outpass from "./components/Outpass";
-
-// Create the tab navigator for home, profile, and applications page
+import Icon from "react-native-vector-icons/FontAwesome";
 const Tab = createBottomTabNavigator();
 
 function MainTabNavigator() {
@@ -33,9 +32,15 @@ function MainTabNavigator() {
 
   return (
     <Tab.Navigator>
-      {role === "student" && <Tab.Screen name="Home" component={Home} />}
+      <Tab.Screen name="Home" component={Home}
+      
+       />
+      
+      <Tab.Screen
+        name="Applications"
+        component={ApplicationNavigator}
+        />
       <Tab.Screen name="Profile" component={ProfileScreen} />
-      <Tab.Screen name="Applications" component={ApplicationNavigator} />
     </Tab.Navigator>
   );
 }
