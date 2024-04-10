@@ -74,6 +74,7 @@ function ApplicationNavigator() {
 const RootStack = createStackNavigator();
 export default function App() {
   return (
+    // <ProfileScreen/>
     <NavigationContainer>
       <RootStack.Navigator>
         <RootStack.Screen
