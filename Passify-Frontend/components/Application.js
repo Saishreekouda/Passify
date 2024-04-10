@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function Application({ name, rollno, destination, time, status, date}) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [isStudentLogin, setIsStudentLogin] = useState(false);
+
 
   return (
     <View style={styles.container}>
@@ -41,7 +39,7 @@ const getStatusColor = (status) => {
       return "green";
     case "Rejected":
       return "red";
-    case "Invalid":
+    case "Used":
       return "blue";
     default:
       return "black";

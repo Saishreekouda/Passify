@@ -1,4 +1,4 @@
-import Admin from "../models/guard.model.js";
+import Guard from "../models/guard.model.js";
 
 export const getGuard = async (req, res) => {
   try {

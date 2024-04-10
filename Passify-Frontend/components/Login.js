@@ -17,13 +17,14 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AdminHome from  './AdminHome';
-
+import { Picker } from "@react-native-picker/picker";
 
 import axios from "axios";
 
 const logo = require("../assets/Login_Image.png");
 
 export default function Login() {
+  const [role, setRole] = useState("student");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isStudentLogin, setIsStudentLogin] = useState(false);
@@ -33,8 +34,8 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       setLoading(true);
-      const role = isStudentLogin ? "student" : "admin";
-      console.log(role);
+      // const role = isStudentLogin ? "student" : "admin";
+      // console.log(role);
       const response = await axios.post(
         process.env.EXPO_PUBLIC_API_URL + `/auth/${role}/login`,
         {
@@ -47,7 +48,7 @@ export default function Login() {
           },
         }
       );
-      console.log("Response:", response.data); 
+      console.log("Response:", response.data);
 
       if (response.status !== 200) {
         console.error("Error:", error);
@@ -59,9 +60,7 @@ export default function Login() {
       await AsyncStorage.setItem("role", role);
       await AsyncStorage.setItem("token", response.data.token);
 
-      
-        navigation.navigate("Main");
-     
+      navigation.navigate("Main");
     } catch (error) {
       console.error("Error:", error);
       ToastAndroid.show("Login Failed", ToastAndroid.SHORT);
@@ -104,9 +103,31 @@ export default function Login() {
                 autoCorrect={false}
                 autoCapitalize="none"
               />
+              <Text
+              style={{
+                flexDirection: "row",
+                alignItems: "flex-start",
+                textAlign: "left",
+                paddingBottom: 12,
+              }}
+            >
+              Select Role:
+            </Text>
+
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={role}
+                onValueChange={(itemValue) => setRole(itemValue)}
+                style={styles.picker}
+              >
+                <Picker.Item label="Student" value="student" />
+                <Picker.Item label="Admin" value="admin" />
+                <Picker.Item label="Guard" value="guard" />
+              </Picker>
+            </View>
             </View>
 
-            {!isStudentLogin && (
+            {/* {!isStudentLogin && (
               <View style={styles.toggleButtonView}>
                 <Text style={styles.toggleText}>Admin</Text>
                 <Switch
@@ -116,9 +137,9 @@ export default function Login() {
                   value={isStudentLogin}
                 />
               </View>
-            )}
+            )} */}
 
-            {isStudentLogin && (
+            {/* {isStudentLogin && (
               <View style={styles.toggleButtonView}>
                 <Text style={styles.toggleText}>Student</Text>
                 <Switch
@@ -128,7 +149,7 @@ export default function Login() {
                   value={isStudentLogin}
                 />
               </View>
-            )}
+            )} */}
             <View style={styles.buttonView}>
               <Pressable style={styles.button} onPress={handleLogin}>
                 <Text style={styles.buttonText}>LOGIN</Text>
@@ -209,5 +230,15 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontWeight: "bold",
     color: "purple",
+  },
+  pickerContainer: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  picker: {
+    width: "100%", 
   },
 });

@@ -60,7 +60,7 @@ const ProfileScreen = () => {
           }
         );
         console.log(response.data.data)
-        if(role==="admin"){
+        if(role==="admin" || role==="guard"){
           const { name, username } = response.data.data[0];
           setName(name);
           setUserName(username);
@@ -121,7 +121,7 @@ const ProfileScreen = () => {
           </>
         )}
   
-        {role === 'admin' && (
+        {(role === 'admin' || role==="guard") && (
           <>
             <View style={styles.infoContainer}>
               <Text style={styles.infoLabel}>Username:</Text>

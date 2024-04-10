@@ -10,7 +10,7 @@ export const verifyStudentToken = (req, res, next) => {
 
   // Split the token and retrieve the token value
   token = token.split(" ")[1];
-
+  
   // Verify the JWT token
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {

@@ -38,7 +38,7 @@ app.use("/api/v1/auth", loginRouter);
 app.use("/api/v1/student", studentRouter);
 app.use("/api/v1/admin", adminRouter);
 app.use("/api/v1/",outpassRouter);
-app.use("api/v1/guard",guardRouter);
+app.use("/api/v1/guard",guardRouter);
 
 mongoose
   .connect(process.env.MONGO_CONNECTION_URL)

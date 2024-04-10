@@ -58,6 +58,7 @@ const Home = () => {
 
   const handleSubmit = async () => {
     try {
+      // console.log("hi : ", token);
       const response = await axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/student/outpass`,
         {
@@ -85,7 +86,7 @@ const Home = () => {
         transport: '',
         purpose: '',
       });
-      navigation.navigate('ApplicationsPage');
+      navigation.navigate('Applications');
     } catch (error) {
       console.error('Error:', error);
     }
