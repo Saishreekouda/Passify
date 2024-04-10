@@ -12,6 +12,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function Outpass({route, navigation}) {
     const { destination, date, transport, outTime, name, rollno, purpose, status, issuedBy, issueDate, issueTime } = route.params;
+    const [sname, setName] = useState("");
+    const [srollno, setrollno] = useState("");
+    // const [applications, setApplications] = useState([]);
     let role="student";
     console.log(route.params);
     const getStatusColor = (status) => {
@@ -58,8 +61,8 @@ export default function Outpass({route, navigation}) {
               console.log(response.data.data[0].student.name);
               
               setName(response.data.data[0].student.name);
-              setRollno(response.data.data[0].student.rollNumber);
-              setApplications(response.data.data);
+              setrollno(response.data.data[0].student.rollNumber);
+              // setApplications(response.data.data);
             } catch (error) {
               console.error("Error fetching applications:", error);
             }
@@ -79,7 +82,8 @@ export default function Outpass({route, navigation}) {
         </View>
         <View style={styles.detailsContainer}>
           <DetailRow label="Date" icon="calendar" text={date} />
-          {/* <DetailRow label="Destination" icon="map-marker" text={destination} /> */}
+          <DetailRow label="Name" icon="user" text={sname} />
+          <DetailRow label="Roll Number" icon="user" text={srollno} />
           <DetailRow label="Transport" icon="bus" text={transport} />
           <DetailRow label="Out Time" icon="clock-o" text={outTime} />
           <DetailRow label="Purpose of Visit" icon="user" text={purpose} />
@@ -100,7 +104,7 @@ export default function Outpass({route, navigation}) {
       <StatusBar style="auto" />
       </View>
      
-     <Navbar/>
+     {/* <Navbar/> */}
     </View>
   );
 }

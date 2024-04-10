@@ -15,12 +15,12 @@ const ProfileScreen = () => {
   const [semester, setSemester] = useState("");
   const [program, setProgram] = useState("");
   const [phone, setPhone] = useState("");
-  const [token, setToken] = useState("");
+  let token="";
   const retrieveStudentLogin = async () => {
     try {
       const role = await AsyncStorage.getItem("role");
-      const token = await AsyncStorage.getItem('token');
-
+      token = await AsyncStorage.getItem('token');
+     
       console.log("Role: ", role);
       console.log("Token: ", token);
     } catch (error) {
@@ -31,7 +31,7 @@ const ProfileScreen = () => {
   const logout = async () => {
     try {
       await AsyncStorage.removeItem('token');
-      setToken("");
+      token="";
       navigation.navigate('Login'); 
       // Navigate to the login screen after logout
       console.log("hiiii",token);
@@ -40,10 +40,11 @@ const ProfileScreen = () => {
     }
   };
 
-  // retrieveStudentLogin();
   useEffect(() => {
     const fetchData = async () => {
       try {
+        await retrieveStudentLogin();
+        console.log(token);
         const response = await axios.get(
           `${process.env.EXPO_PUBLIC_API_URL}/student/profile`,
           {
