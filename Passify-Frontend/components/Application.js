@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function Application({ name, rollno, destination, time, status, date }) {
+export default function Application({ name, rollno, destination, time, status, date}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isStudentLogin, setIsStudentLogin] = useState(false);

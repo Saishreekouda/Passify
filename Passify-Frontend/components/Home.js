@@ -1,56 +1,96 @@
-import { StatusBar } from "expo-status-bar";
-import { useState } from "react";
-import { Image, StyleSheet, Text, View, ScrollView } from "react-native";
-import { Button, TextInput } from "react-native-paper";
-import Splash from "./Splash";
-import Login from "./Login";
-import { Alert } from "react-native";
-
-import home from "../assets/home.png";
-import { useNavigation } from "@react-navigation/native";
-import Navbar from "./Navbar";
-import { SafeAreaView } from "react-native-safe-area-context";
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet } from 'react-native';
+import { Button, TextInput } from 'react-native-paper';
+import axios from 'axios';
+import Navbar from './Navbar';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import home from "../assets/home.png"
+import { useNavigation } from '@react-navigation/native';
 
-export default function Home() {
+let token="none";
+
+const Home = () => {
   const navigation = useNavigation();
+
   const [formData, setFormData] = useState({
-    destination: "",
-    outDate: "",
-    outTime: "",
-    transport: "",
-    purpose: "",
+    destination: '',
+    outDate: '',
+    outTime: '',
+    transport: '',
+    purpose: '',
   });
+  const [name, setName] = useState("");
+  const [rollno, setRollno] = useState("");
+
+      
+  const retrieveStudentLogin = async () => {
+    try {
+      const role = await AsyncStorage.getItem('role');
+      token = await AsyncStorage.getItem('token');
+      if (!token) {
+        console.error('Token not found');
+        return;
+      }
+      console.log("Role: ", role);
+      console.log("Token: ", token);
+    } catch (error) {
+      console.error('Error retrieving token:', error);
+    }
+  };
+  
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      await retrieveStudentLogin(); 
+      // fetchStudentInfo();
+    };
+  
+    fetchData();
+  }, []);
+  
+
+ 
+  console.log(name);
   const handleInputChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
   };
 
-  const handleSubmit = () => {
-    console.log("Submitted:", formData);
-
-    setFormData({
-      destination: "",
-      outDate: "",
-      outTime: "",
-      transport: "",
-      purpose: "",
-    });
-
-    navigation.navigate("ApplicationsPage");
-  };
-
-  const retrieveStudentLogin = async () => {
+  const handleSubmit = async () => {
     try {
-      const role = await AsyncStorage.getItem("role");
-      const token = await AsyncStorage.getItem("token");
-      console.log("Role: ", role);
-      console.log("Token: ", token);
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_API_URL}/student/outpass`,
+        {
+          destination: formData.destination,
+          outDate: formData.outDate,
+          outTime: formData.outTime,
+          transport: formData.transport,
+          purpose: formData.purpose,
+          // status: "Pending",
+          // name: name,
+          // rollNumber: rollno,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+  
+      setFormData({
+        destination: '',
+        outDate: '',
+        outTime: '',
+        transport: '',
+        purpose: '',
+      });
+      navigation.navigate('ApplicationsPage');
     } catch (error) {
-      console.error(error);
+      console.error('Error:', error);
     }
   };
-  retrieveStudentLogin();
-
+  
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -105,38 +145,33 @@ export default function Home() {
       {/* <Navbar /> */}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: StatusBar.currentHeight,
-  },
-  image: {
-    marginTop: 0,
-    width: 200,
-    height: 200,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   title: {
     fontSize: 20,
-    marginTop: 0,
-    fontWeight: "bold",
-    color: "#370556",
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
-  input: {
-    marginTop: 2,
-    marginBottom: 2,
+  image: {
+    width: 200,
+    height: 200,
   },
   inputView: {
-    width: "70%",
+    width: '80%',
+  },
+  input: {
+    marginBottom: 10,
   },
   button: {
     marginTop: 20,
   },
 });
+
+export default Home;
