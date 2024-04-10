@@ -2,26 +2,28 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TextInput } from "react-native";
 import Splash from "./components/Splash";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import ProfileScreen from "./components/Profile";
 import ApplicationsPage from "./components/ApplicationsPage";
 import Outpass from "./components/Outpass";
-
+import Icon from "react-native-vector-icons/FontAwesome";
 // Create the tab navigator for home, profile, and applications page
 const Tab = createBottomTabNavigator();
 function MainTabNavigator() {
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Home" component={Home}
+      
+       />
+      
       <Tab.Screen
         name="Applications"
         component={ApplicationNavigator}
-        // options={{ headerShown: false }}
-      />
+        />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 }
