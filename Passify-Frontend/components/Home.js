@@ -93,43 +93,56 @@ const Home = () => {
   
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Create New Outpass</Text>
-      <Image source={home} style={styles.image} />
-      <View style={styles.inputView}>
-        <TextInput
-          style={styles.input}
-          placeholder="Destination"
-          value={formData.destination}
-          onChangeText={(text) => handleInputChange('destination', text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Out Date"
-          value={formData.outDate}
-          onChangeText={(text) => handleInputChange('outDate', text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Out Time"
-          value={formData.outTime}
-          onChangeText={(text) => handleInputChange('outTime', text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Transport"
-          value={formData.transport}
-          onChangeText={(text) => handleInputChange('transport', text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Purpose"
-          value={formData.purpose}
-          onChangeText={(text) => handleInputChange('purpose', text)}
-        />
-        <Button mode="contained" onPress={handleSubmit} style={styles.button}>
-          Submit
-        </Button>
-      </View>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <Text style={styles.title}>Create New Outpass</Text>
+
+        <Image source={home} style={styles.image} />
+
+        <View style={styles.inputView}>
+          <TextInput
+            style={styles.input}
+            placeholder="Destination"
+            value={formData.destination}
+            onChangeText={(text) => handleInputChange("destination", text)}
+            left={<TextInput.Icon icon="map-marker" />}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Out Date"
+            value={formData.outDate}
+            onChangeText={(text) => handleInputChange("outDate", text)}
+            left={<TextInput.Icon icon="calendar" />}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Out Time"
+            value={formData.outTime}
+            onChangeText={(text) => handleInputChange("outTime", text)}
+            left={<TextInput.Icon icon="clock" />}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Transport"
+            value={formData.transport}
+            onChangeText={(text) => handleInputChange("transport", text)}
+            left={<TextInput.Icon icon="car" />}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Purpose"
+            value={formData.purpose}
+            onChangeText={(text) => handleInputChange("purpose", text)}
+            left={<TextInput.Icon icon="account" />}
+          />
+
+          <Button mode="contained" onPress={handleSubmit} style={styles.button}>
+            Submit
+          </Button>
+        </View>
+      </ScrollView>
+
+      {/* <Navbar /> */}
     </View>
   );
 };

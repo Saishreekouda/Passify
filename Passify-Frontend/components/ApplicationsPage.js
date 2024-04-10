@@ -62,22 +62,22 @@ export default function ApplicationsPage({ navigation }) {
     fetchData();
   }, []);
 
-  const handlePress = () => {
-    console.log("hello")
-    navigation.navigate("Outpass", {
-      time: "10:00 am",
-      destination: "Civs",
-      transport: "Bus",
-      status: "Pending",
-      date: "12th May 2024",
-      name: "John Doe",
-      rollno: "IIT2021009",
-      purpose: "Going Home",
-      issueTime: "6 pm",
-      issueDate: "12th May 2024",
-      issuedBy: "Dean",
-    });
-  }
+  // const handlePress = () => {
+  //   console.log("hello")
+  //   navigation.navigate("Outpass", {
+  //     time: "10:00 am",
+  //     destination: "Civs",
+  //     transport: "Bus",
+  //     status: "Pending",
+  //     date: "12th May 2024",
+  //     name: "John Doe",
+  //     rollno: "IIT2021009",
+  //     purpose: "Going Home",
+  //     issueTime: "6 pm",
+  //     issueDate: "12th May 2024",
+  //     issuedBy: "Dean",
+  //   });
+  // }
 
   const filteredApplications =
     value === "upcoming"
@@ -118,7 +118,7 @@ export default function ApplicationsPage({ navigation }) {
           ))}
         </View>
       </ScrollView>
-      <Navbar />
+      {/* <Navbar /> */}
     </View>
   );
 }
