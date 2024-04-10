@@ -5,9 +5,14 @@ import { Button, Chip } from 'react-native-paper';
 import Header from "./Header";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Navbar from './Navbar';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function Outpass({route, navigation}) {
-    const { destination, date, transport, time, name, rollno, purpose, status, issuedBy, issueDate, issueTime } = route.params;
+    const { destination, date, transport, outTime, name, rollno, purpose, status, issuedBy, issueDate, issueTime } = route.params;
+    let role="student";
     console.log(route.params);
     const getStatusColor = (status) => {
         switch (status) {
@@ -23,6 +28,47 @@ export default function Outpass({route, navigation}) {
             return "black";
         }
       };
+
+
+      const retrieveStudentLogin = async () => {
+        try {
+          console.log("Fetching applications")
+          role = await AsyncStorage.getItem('role');
+          const token = await AsyncStorage.getItem('token');
+          console.log("Role: ", role);
+          console.log("Token: ", token);
+          return { role, token };
+        } catch (error) {
+          console.error(error);
+          return { role: null, token: null };
+        }
+      };       
+
+      useEffect(() => {
+        const fetchData = async () => {
+          const { role, token } = await retrieveStudentLogin();
+          if (role && token) {
+            try {
+              const response = await axios.get(process.env.EXPO_PUBLIC_API_URL + `/${role}/outpass`, {
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`,
+                },
+              });
+              console.log(response.data.data[0].student.name);
+              
+              setName(response.data.data[0].student.name);
+              setRollno(response.data.data[0].student.rollNumber);
+              setApplications(response.data.data);
+            } catch (error) {
+              console.error("Error fetching applications:", error);
+            }
+          }
+        };
+    
+        fetchData();
+      }, []);
+
   return (
     <View style={styles.container}>
       {/* <Header title="View Outpass Details" /> */}
@@ -35,7 +81,7 @@ export default function Outpass({route, navigation}) {
           <DetailRow label="Date" icon="calendar" text={date} />
           {/* <DetailRow label="Destination" icon="map-marker" text={destination} /> */}
           <DetailRow label="Transport" icon="bus" text={transport} />
-          <DetailRow label="Out Time" icon="clock-o" text={time} />
+          <DetailRow label="Out Time" icon="clock-o" text={outTime} />
           <DetailRow label="Purpose of Visit" icon="user" text={purpose} />
         </View>
         <View style={[styles.issuedBy, {marginTop:20}]}>
@@ -43,10 +89,14 @@ export default function Outpass({route, navigation}) {
             <Text style={{color:"white", padding:4}}>Issue Date: {issueDate}</Text>
             <Text style={{color:"white", padding:4}}>Issue Time: {issueTime}</Text>
         </View>
-        <View style={{flexDirection:"row", justifyContent:'center', alignItems:'center', marginTop:32}}> 
-        <Button style={{borderColor: 'green', marginRight:48}} textColor='green' mode="outlined" icon="check"> Accept </Button>
-        <Button style={{borderColor: 'red'}} textColor='red' mode="outlined" icon="close"> Reject </Button>
-      </View>
+        {role==="admin" && (
+           <View style={{flexDirection:"row", justifyContent:'center', alignItems:'center', marginTop:32}}> 
+           <Button style={{borderColor: 'green', marginRight:48}} textColor='green' mode="outlined" icon="check" > Accept </Button>
+           <Button style={{borderColor: 'red'}} textColor='red' mode="outlined" icon="close"> Reject </Button>
+         </View>
+        )
+        }
+       
       <StatusBar style="auto" />
       </View>
      
@@ -96,7 +146,7 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     padding:12,
-    marginBottom: 80,
+    marginBottom: 0,
   },
   detailRow: {
     flexDirection: "row",
@@ -115,10 +165,5 @@ const styles = StyleSheet.create({
   detailText: {
     fontSize: 16,
     color: "white",
-  },
-  issuedBy: {
-    position: "absolute",
-    bottom: 80,
-    left: 42,
   },
 });

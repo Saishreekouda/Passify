@@ -17,10 +17,7 @@ const logo = require("../assets/Login_Image.png");
 export default function ApplicationsPage({ navigation }) {
   const [applications, setApplications] = useState([]);
   const [value, setValue] = useState("upcoming");
-  const [destination, setDestination] = useState("");
-  const [outTime, setOutTime] = useState("");
-  const [status, setStatus] = useState("");
-  const [outDate, setOutDate] = useState("");
+  const [id, setId] = useState(0);
   const [sname, setName] = useState("");
   const [rollno, setRollno] = useState("");
   const retrieveStudentLogin = async () => {
@@ -48,8 +45,8 @@ export default function ApplicationsPage({ navigation }) {
               "Authorization": `Bearer ${token}`,
             },
           });
-          console.log(response.data.data[0].student.name);
-          
+          console.log(response.data.data[0]);
+          setId(response.data.data[0]._id);
           setName(response.data.data[0].student.name);
           setRollno(response.data.data[0].student.rollNumber);
           setApplications(response.data.data);
@@ -62,20 +59,21 @@ export default function ApplicationsPage({ navigation }) {
     fetchData();
   }, []);
 
-  const handlePress = () => {
+  const handlePress = (app) => {
     console.log("hello")
     navigation.navigate("Outpass", {
-      time: "10:00 am",
-      destination: "Civs",
-      transport: "Bus",
-      status: "Pending",
-      date: "12th May 2024",
-      name: "John Doe",
-      rollno: "IIT2021009",
-      purpose: "Going Home",
-      issueTime: "6 pm",
-      issueDate: "12th May 2024",
-      issuedBy: "Dean",
+      outTime: app.outTime,
+      destination: app.destination,
+      transport: app.transport,
+      status:app.status,
+      date: app.outDate,
+      name: sname,
+      rollno: rollno,
+      purpose: app.purpose,
+      issueTime: app.issueTime,
+      issueDate: app.issueDate,
+      issuedBy: "",
+      id: id,
     });
   }
 
@@ -105,7 +103,9 @@ export default function ApplicationsPage({ navigation }) {
           </View>
 
           {filteredApplications.map((app, index) => (
-            <Pressable onPress={handlePress} key={index}>
+            <Pressable onPress={()=>{
+              handlePress(app);
+            }} key={index}>
               <Application
                 destination={app.destination}
                 time={app.outTime}
@@ -113,6 +113,7 @@ export default function ApplicationsPage({ navigation }) {
                 date={app.outDate}
                 name={sname}
                 rollno={rollno}
+                id={id}
               />
             </Pressable>
           ))}

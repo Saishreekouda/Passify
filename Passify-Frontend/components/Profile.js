@@ -5,6 +5,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {useState,useEffect} from 'react';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from "react-native-vector-icons/FontAwesome";
+
 const ProfileScreen = () => {
   const [name,setName]=useState("");
   const [rollno,setRollno]=useState("");
@@ -55,9 +57,17 @@ const ProfileScreen = () => {
     <SafeAreaProvider>
 
     <View style={styles.container}>
-      <View style={styles.avatarContainer}>
-        <Text style={styles.name}>{name}</Text>
+    <View style={[styles.avatarContainer,{marginBottom:12}]}>
+        <Image
+          source={{ uri: 'https://avatars.githubusercontent.com/u/55929607?v=4' }}
+          style={[styles.avatar]}
+        />
+        <View style={{flexDirection:"row", justifyContent:'center', alignItems:'center', gap:12 }}>
+           <Text style={[styles.name]}>{name}</Text>
+           <Icon name="sign-out" size={24} style={{marginBottom:-8}}/>
+        </View>
       </View>
+
       <View style={styles.infoContainer}>
         <Text style={styles.infoLabel}>Roll Number:</Text>
         <Text style={styles.infoValue}>{rollno}</Text>
@@ -76,7 +86,7 @@ const ProfileScreen = () => {
       </View>
       
       <View style={styles.navbar}>
-      <Navbar navigation={navigation}/>
+      <Navbar />
       </View>
       
      

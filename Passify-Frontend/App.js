@@ -18,19 +18,19 @@ const Stack = createStackNavigator();
 
 export default function App() {
   return (
-    // <ProfileScreen/>
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Splash">
-        <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
-        <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="Application" component={Application} />
-        <Stack.Screen name="ApplicationsPage" component={ApplicationsPage} />
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="Outpass" component={Outpass} initialParams={{}}/>
-        <Stack.Screen name="Home" component={Home} />
-      </Stack.Navigator>
-      <StatusBar style="auto" />
-    </NavigationContainer>
+    <ProfileScreen />
+    // <NavigationContainer>
+    //   <Stack.Navigator initialRouteName="Splash">
+    //     <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
+    //     <Stack.Screen name="Login" component={Login} />
+    //     <Stack.Screen name="Application" component={Application} />
+    //     <Stack.Screen name="ApplicationsPage" component={ApplicationsPage} />
+    //     <Stack.Screen name="Profile" component={Profile} />
+    //     <Stack.Screen name="Outpass" component={Outpass} initialParams={{}}/>
+    //     <Stack.Screen name="Home" component={Home} />
+    //   </Stack.Navigator>
+    //   <StatusBar style="auto" />
+    // </NavigationContainer>
   )};
 
 
