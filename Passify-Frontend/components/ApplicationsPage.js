@@ -59,7 +59,6 @@ export default function ApplicationsPage({ navigation }) {
     fetchData();
   }, []);
 
-<<<<<<< HEAD
   const handlePress = (app) => {
     console.log("hello")
     navigation.navigate("Outpass", {
@@ -77,7 +76,6 @@ export default function ApplicationsPage({ navigation }) {
       id: id,
     });
   }
-=======
   // const handlePress = () => {
   //   console.log("hello")
   //   navigation.navigate("Outpass", {
@@ -94,7 +92,6 @@ export default function ApplicationsPage({ navigation }) {
   //     issuedBy: "Dean",
   //   });
   // }
->>>>>>> 9f4a4a5a39acd30ef13a6f73ed23226ce97751be
 
   const filteredApplications =
     value === "upcoming"
