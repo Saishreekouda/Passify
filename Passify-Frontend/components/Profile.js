@@ -1,24 +1,25 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import Navbar from "./Navbar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const ProfileScreen = () => {
   const [name, setName] = useState("");
+  const navigation = useNavigation();
   const [rollno, setRollno] = useState("");
   const [semester, setSemester] = useState("");
   const [program, setProgram] = useState("");
   const [phone, setPhone] = useState("");
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IklJVDIwMjExMzMiLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTcxMjY1MzQ5MywiZXhwIjoxNzEyNzM5ODkzfQ.-hYsst26hH9bsLgNR2kVDd7tjSbUSqTcIOHenEezhNc";
+  const [token, setToken] = useState("");
   const retrieveStudentLogin = async () => {
     try {
       const role = await AsyncStorage.getItem("role");
-      // const token = await AsyncStorage.getItem('token');
+      const token = await AsyncStorage.getItem('token');
 
       console.log("Role: ", role);
       console.log("Token: ", token);
@@ -26,6 +27,19 @@ const ProfileScreen = () => {
       console.error(error);
     }
   };
+
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+      setToken("");
+      navigation.navigate('Login'); 
+      // Navigate to the login screen after logout
+      console.log("hiiii",token);
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   // retrieveStudentLogin();
   useEffect(() => {
     const fetchData = async () => {
@@ -64,7 +78,9 @@ const ProfileScreen = () => {
         />
         <View style={{flexDirection:"row", justifyContent:'center', alignItems:'center', gap:12 }}>
            <Text style={[styles.name]}>{name}</Text>
-           <Icon name="sign-out" size={24} style={{marginBottom:-8}}/>
+           <Pressable onPress={logout}>
+              <Icon name="sign-out" size={24} style={{ marginBottom: -8 }} />
+            </Pressable>
         </View>
       </View>
 

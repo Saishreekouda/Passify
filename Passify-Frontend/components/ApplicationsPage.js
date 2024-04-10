@@ -59,7 +59,6 @@ export default function ApplicationsPage({ navigation }) {
     fetchData();
   }, []);
 
-<<<<<<< HEAD
   const handlePress = (app) => {
     console.log("hello")
     navigation.navigate("Outpass", {
@@ -77,24 +76,6 @@ export default function ApplicationsPage({ navigation }) {
       id: id,
     });
   }
-=======
-  // const handlePress = () => {
-  //   console.log("hello")
-  //   navigation.navigate("Outpass", {
-  //     time: "10:00 am",
-  //     destination: "Civs",
-  //     transport: "Bus",
-  //     status: "Pending",
-  //     date: "12th May 2024",
-  //     name: "John Doe",
-  //     rollno: "IIT2021009",
-  //     purpose: "Going Home",
-  //     issueTime: "6 pm",
-  //     issueDate: "12th May 2024",
-  //     issuedBy: "Dean",
-  //   });
-  // }
->>>>>>> 9f4a4a5a39acd30ef13a6f73ed23226ce97751be
 
   const filteredApplications =
     value === "upcoming"

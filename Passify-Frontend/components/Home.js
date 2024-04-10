@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image, StyleSheet,ScrollView } from 'react-native';
 import { Button, TextInput } from 'react-native-paper';
 import axios from 'axios';
 import Navbar from './Navbar';
