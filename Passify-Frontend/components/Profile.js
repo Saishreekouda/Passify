@@ -51,6 +51,7 @@ const ProfileScreen = () => {
     fetchData(); 
   
   },[]); 
+  
   return (
     <SafeAreaProvider>
 
