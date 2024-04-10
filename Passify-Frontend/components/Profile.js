@@ -1,24 +1,25 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import Navbar from './Navbar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import {useState,useEffect} from 'react';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from "react";
+import { View, Text, Image, StyleSheet } from "react-native";
+import Navbar from "./Navbar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/FontAwesome";
 
 const ProfileScreen = () => {
-  const [name,setName]=useState("");
-  const [rollno,setRollno]=useState("");
-  const [semester,setSemester]=useState("");
-  const [program,setProgram]=useState("");
-  const [phone,setPhone]=useState("");
-  const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IklJVDIwMjExMzMiLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTcxMjY1MzQ5MywiZXhwIjoxNzEyNzM5ODkzfQ.-hYsst26hH9bsLgNR2kVDd7tjSbUSqTcIOHenEezhNc";
+  const [name, setName] = useState("");
+  const [rollno, setRollno] = useState("");
+  const [semester, setSemester] = useState("");
+  const [program, setProgram] = useState("");
+  const [phone, setPhone] = useState("");
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IklJVDIwMjExMzMiLCJyb2xlIjoic3R1ZGVudCIsImlhdCI6MTcxMjY1MzQ5MywiZXhwIjoxNzEyNzM5ODkzfQ.-hYsst26hH9bsLgNR2kVDd7tjSbUSqTcIOHenEezhNc";
   const retrieveStudentLogin = async () => {
     try {
-      const role = await AsyncStorage.getItem('role');
+      const role = await AsyncStorage.getItem("role");
       // const token = await AsyncStorage.getItem('token');
-     
+
       console.log("Role: ", role);
       console.log("Token: ", token);
     } catch (error) {
@@ -37,22 +38,21 @@ const ProfileScreen = () => {
             },
           }
         );
-        const {name, rollNumber,semester, phone, program} = response.data.data; 
-      
+        const { name, rollNumber, semester, phone, program } =
+          response.data.data;
+
         setName(name);
         setRollno(rollNumber);
         setProgram(program);
         setSemester(semester);
         setPhone(phone);
-      
       } catch (error) {
-        console.error('Error fetching profile data:', error);
+        console.error("Error fetching profile data:", error);
       }
     };
-  
-    fetchData(); 
-  
-  },[]); 
+
+    fetchData();
+  }, []);
   return (
     <SafeAreaProvider>
 
@@ -86,7 +86,7 @@ const ProfileScreen = () => {
       </View>
       
       <View style={styles.navbar}>
-      <Navbar />
+      {/* <Navbar /> */}
       </View>
       
      
@@ -99,12 +99,12 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     padding: 20,
-    paddingBottom:0
+    paddingBottom: 0,
   },
   avatarContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
   avatar: {
@@ -114,24 +114,23 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginTop: 10,
   },
   infoContainer: {
     marginTop: 20,
   },
   infoLabel: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   infoValue: {
     marginTop: 5,
   },
-    navbar: {
-        flex:1,
-        marginLeft:-20,
-        marginRight:-20
-    },
- 
+  navbar: {
+    flex: 1,
+    marginLeft: -20,
+    marginRight: -20,
+  },
 });
 
 export default ProfileScreen;
