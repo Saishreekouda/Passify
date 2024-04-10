@@ -47,7 +47,7 @@ export default function Login() {
           },
         }
       );
-      console.log("Response:", response.data); // Log response
+      console.log("Response:", response.data); 
 
       if (response.status !== 200) {
         console.error("Error:", error);
