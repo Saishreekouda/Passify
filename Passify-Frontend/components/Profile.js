@@ -10,17 +10,20 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const ProfileScreen = () => {
   const [name, setName] = useState("");
+  const [username, setUserName] = useState("");
   const navigation = useNavigation();
   const [rollno, setRollno] = useState("");
   const [semester, setSemester] = useState("");
   const [program, setProgram] = useState("");
   const [phone, setPhone] = useState("");
-  let token="";
+  const [role, setRole] = useState("null"); 
+
+  let token=""
   const retrieveStudentLogin = async () => {
     try {
       const role = await AsyncStorage.getItem("role");
       token = await AsyncStorage.getItem('token');
-     
+      setRole(role)
       console.log("Role: ", role);
       console.log("Token: ", token);
     } catch (error) {
@@ -41,76 +44,104 @@ const ProfileScreen = () => {
   };
 
   useEffect(() => {
+     
     const fetchData = async () => {
+      await retrieveStudentLogin();
       try {
-        await retrieveStudentLogin();
-        console.log(token);
+        const role = await AsyncStorage.getItem("role");
+        const token = await AsyncStorage.getItem('token');
+  
         const response = await axios.get(
-          `${process.env.EXPO_PUBLIC_API_URL}/student/profile`,
+          `${process.env.EXPO_PUBLIC_API_URL}/${role}/profile`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        const { name, rollNumber, semester, phone, program } =
-          response.data.data;
-
-        setName(name);
-        setRollno(rollNumber);
-        setProgram(program);
-        setSemester(semester);
-        setPhone(phone);
+        console.log(response.data.data)
+        if(role==="admin"){
+          const { name, username } = response.data.data[0];
+          setName(name);
+          setUserName(username);
+        } else {
+          const { name, rollNumber, semester, phone, program } = response.data.data;
+          setName(name);
+          setRollno(rollNumber);
+          setProgram(program);
+          setSemester(semester);
+          setPhone(phone);
+        }
       } catch (error) {
         console.error("Error fetching profile data:", error);
       }
     };
-
+  
     fetchData();
   }, []);
+
   return (
     <SafeAreaProvider>
+      <View style={styles.container}>
+        <View style={[styles.avatarContainer, { marginBottom: 12 }]}>
+          <Image
+            source={{ uri: 'https://avatars.githubusercontent.com/u/55929607?v=4' }}
+            style={[styles.avatar]}
+          />
+          <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center', gap: 12 }}>
+            <Text style={[styles.name]}>{name}</Text>
+            <Pressable onPress={logout}>
+            <Icon name="sign-out" size={24} style={{ marginBottom: -8 }} />
 
-    <View style={styles.container}>
-    <View style={[styles.avatarContainer,{marginBottom:12}]}>
-        <Image
-          source={{ uri: 'https://avatars.githubusercontent.com/u/55929607?v=4' }}
-          style={[styles.avatar]}
-        />
-        <View style={{flexDirection:"row", justifyContent:'center', alignItems:'center', gap:12 }}>
-           <Text style={[styles.name]}>{name}</Text>
-           <Pressable onPress={logout}>
-              <Icon name="sign-out" size={24} style={{ marginBottom: -8 }} />
             </Pressable>
+          </View>
+        </View>
+  
+        
+        
+        {role === 'student' && (
+          <>
+          <View style={styles.infoContainer}>
+          <Text style={styles.infoLabel}>Roll Number:</Text>
+          <Text style={styles.infoValue}>{rollno}</Text>
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.infoLabel}>Semester:</Text>
+          <Text style={styles.infoValue}>{semester}</Text>
+        </View>
+
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoLabel}>Program:</Text>
+              <Text style={styles.infoValue}>{program}</Text>
+            </View>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoLabel}>Phone:</Text>
+              <Text style={styles.infoValue}>{phone}</Text>
+            </View>
+          </>
+        )}
+  
+        {role === 'admin' && (
+          <>
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoLabel}>Username:</Text>
+              <Text style={styles.infoValue}>{username}</Text>
+            </View>
+
+            <View style={styles.infoContainer}>
+              <Text style={styles.infoLabel}>Name:</Text>
+              <Text style={styles.infoValue}>{name}</Text>
+            </View>
+          </>
+        )}
+        
+        <View style={styles.navbar}>
+          {/* <Navbar /> */}
         </View>
       </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoLabel}>Roll Number:</Text>
-        <Text style={styles.infoValue}>{rollno}</Text>
-      </View>
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoLabel}>Semester:</Text>
-        <Text style={styles.infoValue}>{semester}</Text>
-      </View>
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoLabel}>Program:</Text>
-        <Text style={styles.infoValue}>{program}</Text>
-      </View>
-      <View style={styles.infoContainer}>
-        <Text style={styles.infoLabel}>Phone:</Text>
-        <Text style={styles.infoValue}>{phone}</Text>
-      </View>
-      
-      <View style={styles.navbar}>
-      {/* <Navbar /> */}
-      </View>
-      
-     
-      
-    </View>
     </SafeAreaProvider>
   );
+  
 };
 
 const styles = StyleSheet.create({

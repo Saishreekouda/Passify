@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     height: 200,
   },
   inputView: {
-    width: '80%',
+    width: 250,
   },
   input: {
     marginBottom: 10,
