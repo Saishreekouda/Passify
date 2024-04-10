@@ -89,7 +89,7 @@ export default function Login() {
             <View style={styles.inputView}>
               <TextInput
                 style={styles.input}
-                placeholder="USERNAME"
+                placeholder="Username"
                 value={username}
                 onChangeText={setUsername}
                 autoCorrect={false}
@@ -97,7 +97,7 @@ export default function Login() {
               />
               <TextInput
                 style={styles.input}
-                placeholder="PASSWORD"
+                placeholder="Password"
                 secureTextEntry
                 value={password}
                 onChangeText={setPassword}

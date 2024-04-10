@@ -5,7 +5,9 @@ import { getFormattedDate, getFormattedTime } from "../utils/formatter.js";
 
 export const createOutpass = async (req, res) => {
   try {
+    console(req.username);
     const student = await Student.findOne({ rollNumber: req.username });
+    console.log(student);
     const { outDate, outTime, destination, transport, purpose } = req.body;
 
     const outpass = new Outpass({
@@ -50,7 +52,11 @@ export const getAllOutpassesForStudent = async (req, res) => {
         match: { rollNumber: req.username },
       })
       .exec();
-    return res.status(200).json({ data: outpasses });
+    const filteredOutpasses = outpasses.filter(
+      (outpass) => outpass.student !== null
+    );
+
+    return res.status(200).json({ data: filteredOutpasses });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -102,15 +108,12 @@ export const updateStatus = async (req, res) => {
   }
 };
 
-
 export const getInvalidOutpassesForGuard = async (req, res) => {
   try {
     const admin = await Admin.findOne({ username: req.username });
 
     const invalidOutpasses = await Outpass.find({
-      $and: [
-        { $or: [{ status: "Invalid" }] }
-      ],
+      $and: [{ $or: [{ status: "Invalid" }] }],
     });
 
     return res.status(200).json({ data: invalidOutpasses });

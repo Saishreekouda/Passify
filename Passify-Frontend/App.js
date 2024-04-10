@@ -14,7 +14,7 @@ import Outpass from "./components/Outpass";
 const Tab = createBottomTabNavigator();
 
 function MainTabNavigator() {
-  const [role, setRole] = useState(null);
+  const [role, setRole] = useState("student");
 
   useEffect(() => {
     const retrieveStudentLogin = async () => {

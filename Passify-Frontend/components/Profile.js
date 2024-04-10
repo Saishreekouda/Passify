@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import Navbar from "./Navbar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -10,13 +11,14 @@ import Icon from "react-native-vector-icons/FontAwesome";
 const ProfileScreen = () => {
   const [name, setName] = useState("");
   const [username, setUserName] = useState("");
+  const navigation = useNavigation();
   const [rollno, setRollno] = useState("");
   const [semester, setSemester] = useState("");
   const [program, setProgram] = useState("");
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState("null"); 
 
-  let token="null"
+  let token=""
   const retrieveStudentLogin = async () => {
     try {
       const role = await AsyncStorage.getItem("role");
@@ -28,7 +30,19 @@ const ProfileScreen = () => {
       console.error(error);
     }
   };
- 
+
+  const logout = async () => {
+    try {
+      await AsyncStorage.removeItem('token');
+      token="";
+      navigation.navigate('Login'); 
+      // Navigate to the login screen after logout
+      console.log("hiiii",token);
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   useEffect(() => {
      
     const fetchData = async () => {
@@ -76,7 +90,10 @@ const ProfileScreen = () => {
           />
           <View style={{ flexDirection: "row", justifyContent: 'center', alignItems: 'center', gap: 12 }}>
             <Text style={[styles.name]}>{name}</Text>
+            <Pressable onPress={logout}>
             <Icon name="sign-out" size={24} style={{ marginBottom: -8 }} />
+
+            </Pressable>
           </View>
         </View>
   
