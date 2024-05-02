@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
   StyleSheet,
@@ -8,34 +8,27 @@ import {
   RefreshControl,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Application from "./Application";
-import Navbar from "./Navbar";
 import axios from "axios";
+import Application from "./Application";
 import { SegmentedButtons } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-const logo = require("../assets/Login_Image.png");
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
-export default function ApplicationsPage({ navigation }) {
+export default function ApplicationsPage() {
+  const navigation = useNavigation();
+
   const [applications, setApplications] = useState([]);
-  const [value, setValue] = useState("upcoming");
-  const [id, setId] = useState(0);
-  const [sname, setName] = useState("");
-  const [rollno, setRollno] = useState("");
   const [role, setRole] = useState("");
-  const [refreshing, setRefreshing] = useState(false); // State for refreshing
+  const [refreshing, setRefreshing] = useState(false);
+  const [selectedTab, setSelectedTab] = useState("upcoming");
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
-    setRefreshing(true); // Start refreshing
+  const fetchData = useCallback(async () => {
+    setRefreshing(true);
     const { role: retrievedRole, token } = await retrieveStudentLogin();
     if (retrievedRole && token) {
       try {
         setRole(retrievedRole);
         const response = await axios.get(
-          process.env.EXPO_PUBLIC_API_URL + `/${retrievedRole}/outpass`,
+          `${process.env.EXPO_PUBLIC_API_URL}/${retrievedRole}/outpass`,
           {
             headers: {
               "Content-Type": "application/json",
@@ -43,27 +36,29 @@ export default function ApplicationsPage({ navigation }) {
             },
           }
         );
-        // console.log(response.data.data[0]);
-        setId(response.data.data[0]._id);
-        setName(response.data.data[0].student.name);
-        setRollno(response.data.data[0].student.rollNumber);
-        console.log(response.data.data);
         setApplications(response.data.data);
       } catch (error) {
         console.error("Error fetching applications:", error);
       } finally {
-        setRefreshing(false); // Finish refreshing
+        setRefreshing(false);
       }
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData])
+  );
 
   const retrieveStudentLogin = async () => {
     try {
-      console.log("Fetching applications");
       const role = await AsyncStorage.getItem("role");
       const token = await AsyncStorage.getItem("token");
-      console.log("Role: ", role);
-      console.log("Token: ", token);
       return { role, token };
     } catch (error) {
       console.error(error);
@@ -72,96 +67,86 @@ export default function ApplicationsPage({ navigation }) {
   };
 
   const handlePress = (app) => {
-    console.log("hello");
     navigation.navigate("Outpass", {
-      outTime: app.outTime,
-      destination: app.destination,
-      transport: app.transport,
-      status: app.status,
-      date: app.outDate,
-      name: sname,
-      rollno: rollno,
-      purpose: app.purpose,
-      issueTime: app.issueTime,
-      issueDate: app.issueDate,
-      issuedBy: app.issuedBy,
-      id: id,
+      ...app,
+      name: app.student.name,
+      rollno: app.student.rollNumber,
     });
   };
 
-  const filteredApplications =
-    value === "upcoming"
-      ? role === "admin"
-        ? applications.filter((app) => app.status === "Pending")
-        : applications.filter(
-            (app) => app.status === "Pending" || app.status === "Accepted"
-          )
-      : role === "admin"
-      ? applications.filter(
-          (app) => app.status === "Rejected" || app.status === "Accepted"
-        )
-      : applications.filter(
-          (app) => app.status === "Rejected" || app.status === "Used"
-        );
+  const renderApplications = (apps) => {
+    return apps.map((app, index) => (
+      <Pressable key={index} onPress={() => handlePress(app)}>
+        <Application
+          destination={app.destination}
+          time={app.outTime}
+          status={app.status}
+          date={app.outDate}
+          name={app.student.name}
+          rollno={app.student.rollNumber}
+          id={app._id}
+          role={role}
+        />
+      </Pressable>
+    ));
+  };
+
+  const filteredApplications = () => {
+    if (role === "admin") {
+      if (selectedTab === "upcoming") {
+        return applications.filter((app) => app.status === "Pending");
+      } else if (selectedTab === "past") {
+        return applications.filter((app) => app.status !== "Pending");
+      }
+    } else if (role === "student") {
+      return applications.filter((app) => {
+        if (selectedTab === "upcoming") {
+          return app.status === "Pending" || app.status === "Accepted";
+        } else if (selectedTab === "past") {
+          return app.status === "Rejected" || app.status === "Used";
+        }
+      });
+    } else {
+      return applications;
+    }
+    return [];
+  };
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        style={{ paddingBottom: 20 }}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
-        }
-      >
-        <View>
-        <Text style={styles.title}>{role==="guard"?"Used Applications":"My Applications"}</Text>
-         
-         
- { role!=="guard" &&  <View style={{ width: "100%", paddingLeft: 32, paddingRight: 32, paddingTop: 0 }}>
-            <SegmentedButtons
-              value={value}
-              onValueChange={setValue}
-              buttons={[
-                { value: "upcoming", label: "Upcoming" },
-                { value: "past", label: "Past" },
-              ]}
-            />
-          </View>}
+      <Text style={styles.title}>
+        {role === "guard" ? "Used Applications" : "My Applications"}
+      </Text>
 
-          {role!=="guard" && filteredApplications.map((app, index) => (
-            <Pressable onPress={() => {
-              handlePress(app);
-            }} key={index}>
-              <Application
-                destination={app.destination}
-                time={app.outTime}
-                status={app.status}
-                date={app.outDate}
-                name={sname}
-                rollno={rollno}
-                id={id}
-              />
-            </Pressable>
-          ))}
-          {
-            role==="guard" && applications.filter((app,index)=>app.status==="Used").map((app,index)=>(
-              <Pressable onPress={() => {
-                handlePress(app);
-              }} key={index}>
-                <Application
-                  destination={app.destination}
-                  time={app.outTime}
-                  status={app.status}
-                  date={app.outDate}
-                  name={sname}
-                  rollno={rollno}
-                  id={id}
-                />
-              </Pressable>
-            ))
-          }
+      {role !== "guard" && (
+        <View style={styles.segmentedButtons}>
+          <SegmentedButtons
+            value={selectedTab}
+            onValueChange={setSelectedTab}
+            buttons={[
+              { value: "upcoming", label: "Upcoming" },
+              { value: "past", label: "Past" },
+            ]}
+          />
         </View>
-      </ScrollView>
-      {/* <Navbar /> */}
+      )}
+
+      {selectedTab === "upcoming" || selectedTab === "past" ? (
+        <ScrollView
+          style={styles.scrollableView}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={fetchData} />
+          }
+        >
+          {renderApplications(filteredApplications())}
+        </ScrollView>
+      ) : (
+        <View style={styles.fixedView}>
+          {renderApplications(filteredApplications())}
+        </View>
+      )}
+
+      {/* {refreshing && <Text>Loading...</Text>} */}
     </View>
   );
 }
@@ -171,19 +156,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    padding: 0,
+    justifyContent: "center",
+    padding: 16,
   },
-
   title: {
     fontSize: 30,
     fontWeight: "bold",
-    textAlign: "left",
-    paddingVertical: 40,
-    marginLeft: 32,
     color: "#370556",
+    marginBottom: 20,
   },
-  navbar: {
-    marginTop: 210,
-    width: 400,
+  segmentedButtons: {
+    width: "100%",
+    marginBottom: 20,
+  },
+  scrollableView: {
+    flex: 1,
+    width: "100%",
+  },
+  fixedView: {
+    width: "100%",
+    maxHeight: 300, // Set max height or use other styling as needed
   },
 });

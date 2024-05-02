@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Splash from "./components/Splash";
+import Scanner from "./components/Scanner";
 import Login from "./components/Login";
 import Home from "./components/Home";
 import ProfileScreen from "./components/Profile";
@@ -32,39 +33,56 @@ function MainTabNavigator() {
 
   return (
     <Tab.Navigator>
-     {role==='student' && <Tab.Screen name="Home" component={Home}
-      options={{
-        tabBarIcon: ({ color, size }) => (
-          <Icon name="home" color={color} size={size} />
-        )
-      }}
-       />}
-      
+      {role === "student" && (
+        <Tab.Screen
+          name="Home"
+          component={Home}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="home" color={color} size={size} />
+            ),
+          }}
+        />
+      )}
+
       <Tab.Screen
         name="Applications"
         component={ApplicationNavigator}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="th-list" color={color} size={size} />
-          )
+          ),
         }}
+      />
+      {role === "guard" && (
+        <Tab.Screen
+          name="Scanner"
+          component={Scanner}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="camera" color={color} size={size} />
+            ),
+          }}
         />
-      <Tab.Screen name="Profile" component={ProfileScreen}
-      options={{
-        tabBarIcon: ({ color, size }) => (
-          <Icon name="user" color={color} size={size} />
-        )
-      }}
-       />
+      )}
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Icon name="user" color={color} size={size} />
+          ),
+        }}
+      />
     </Tab.Navigator>
-  )
+  );
 
   // return (
   //   <Tab.Navigator>
   //     {role==='student' && <Tab.Screen name="Home" component={Home}
-      
+
   //      />}
-      
+
   //     <Tab.Screen
   //       name="Applications"
   //       component={ApplicationNavigator}

@@ -1,75 +1,60 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet,ScrollView } from 'react-native';
-import { Button, TextInput } from 'react-native-paper';
-import axios from 'axios';
-import Navbar from './Navbar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import home from "../assets/home.png"
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from "react";
+import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
+import { Button, TextInput } from "react-native-paper";
+import axios from "axios";
+import Navbar from "./Navbar";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import home from "../assets/home.png";
+import { useNavigation } from "@react-navigation/native";
 
-let token="none";
+let token = "none";
 
 const Home = () => {
   const navigation = useNavigation();
 
   const [formData, setFormData] = useState({
-    destination: '',
-    outDate: '',
-    outTime: '',
-    transport: '',
-    purpose: '',
+    destination: "",
+    outDate: "",
+    outTime: "",
+    transport: "",
+    purpose: "",
   });
-  const [name, setName] = useState("");
-  const [rollno, setRollno] = useState("");
 
-      
   const retrieveStudentLogin = async () => {
     try {
-      const role = await AsyncStorage.getItem('role');
-      token = await AsyncStorage.getItem('token');
+      const role = await AsyncStorage.getItem("role");
+      token = await AsyncStorage.getItem("token");
       if (!token) {
-        console.error('Token not found');
+        console.error("Token not found");
         return;
       }
       console.log("Role: ", role);
       console.log("Token: ", token);
     } catch (error) {
-      console.error('Error retrieving token:', error);
+      console.error("Error retrieving token:", error);
     }
   };
-  
-  
+
   useEffect(() => {
     const fetchData = async () => {
-      await retrieveStudentLogin(); 
-      // fetchStudentInfo();
+      await retrieveStudentLogin();
     };
-  
+
     fetchData();
   }, []);
-  
 
- 
-  console.log(name);
   const handleInputChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
   };
 
   const handleSubmit = async () => {
     try {
-      // console.log("hi : ", token);
+      console.log(formData);
       const response = await axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/student/outpass`,
         {
-          destination: formData.destination,
-          outDate: formData.outDate,
-          outTime: formData.outTime,
-          transport: formData.transport,
-          purpose: formData.purpose,
-          // status: "Pending",
-          // name: name,
-          // rollNumber: rollno,
+          ...formData,
         },
         {
           headers: {
@@ -78,20 +63,30 @@ const Home = () => {
         }
       );
       console.log(response.data);
-  
+
       setFormData({
-        destination: '',
-        outDate: '',
-        outTime: '',
-        transport: '',
-        purpose: '',
+        destination: "",
+        outDate: "",
+        outTime: "",
+        transport: "",
+        purpose: "",
       });
-      navigation.navigate('Applications');
+      navigation.navigate("Applications");
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
     }
   };
-  
+
+  const fillTestApplication = () => {
+    setFormData({
+      destination: "Test Destination",
+      outDate: "2024-05-10",
+      outTime: "10:00 AM",
+      transport: "Bus",
+      purpose: "Test Purpose",
+    });
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
@@ -128,7 +123,6 @@ const Home = () => {
             onChangeText={(text) => handleInputChange("transport", text)}
             left={<TextInput.Icon icon="car" />}
           />
-
           <TextInput
             style={styles.input}
             placeholder="Purpose"
@@ -140,10 +134,12 @@ const Home = () => {
           <Button mode="contained" onPress={handleSubmit} style={styles.button}>
             Submit
           </Button>
+
+          <Button onPress={fillTestApplication} style={styles.button}>
+            Fill Test Application
+          </Button>
         </View>
       </ScrollView>
-
-      {/* <Navbar /> */}
     </View>
   );
 };
@@ -151,13 +147,13 @@ const Home = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   image: {

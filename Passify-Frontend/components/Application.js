@@ -1,19 +1,28 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
-export default function Application({ name, rollno, destination, time, status, date}) {
-
-
+export default function Application({
+  name,
+  rollno,
+  destination,
+  time,
+  status,
+  date,
+  role,
+}) {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
         <View style={styles.flex}>
           <View>
             <Text style={styles.destination}>{destination}</Text>
-            <Text style={[styles.time,{marginTop:0}]}>{name}</Text>
-            <Text style={[styles.time,{marginTop:2}]}>{rollno}</Text>
+            {role != "student" && (
+              <View>
+                <Text style={[styles.time, { marginTop: 0 }]}>{name}</Text>
+                <Text style={[styles.time, { marginTop: 2 }]}>{rollno}</Text>
+              </View>
+            )}
           </View>
-          
 
           <View style={styles.statusTag}>
             <Text style={[styles.status, { color: getStatusColor(status) }]}>
@@ -21,10 +30,9 @@ export default function Application({ name, rollno, destination, time, status, d
             </Text>
           </View>
         </View>
-        <View style={[styles.flex,{marginTop:20,marginBottom:12}]}>
-       
-        <Text style={styles.date}>{date}</Text>
-        <Text style={styles.time}>{time}</Text>
+        <View style={[styles.flex, { marginTop: 20, marginBottom: 12 }]}>
+          <Text style={styles.date}>{date}</Text>
+          <Text style={styles.time}>{time}</Text>
         </View>
       </View>
     </View>
