@@ -125,10 +125,48 @@ export const updateStatus = async (req, res) => {
   }
 };
 
+// invalidate an outpass when its scanned
+export const invalidateOutpass = async (req, res) => {
+  try{
+    const guardname=req.username;
+    const outpass = await Outpass.findById(req.params.id);
+    const status=outpass.status;
+    const outTime=outpass.outTime;
+    const outDate=outpass.outDate;
+    const currentTime = new Date();
+    const timeDifference = (currentTime - outTime) / (1000 * 60 * 60); // Difference in hours
+    const dateDifference = (currentTime.getDate() !== outDate); // Difference in days
+    
+    console.log(guardname);
+    if(!outpass){
+      return res.status(404).json({message: "Outpass not found"});
+    }
+    if(status!== "Accepted"){
+      return res.status(400).json({message: "Outpass hasn't been accepted by admin"});
+    }
+    if(timeDifference > 3){
+      return res.status(400).json({message: "Outpass has expired, its been past 3 hours since out time"});
+    }
+    if(!dateDifference){
+      return res.status(400).json({message: `Outpass has expired, its been past ${dateDifference} day since out date`});
+    }
+    outpass.status = "Used";
+    outpass.guard = guardname;
+    outpass.exitTime=currentTime;
+    await outpass.save();
+    return res.status(200).json({ data: outpass });
+
+  }
+  catch(error)
+  {
+    return res.status(500).json({message: error.message})
+  }
+}
+
+
 export const getInvalidOutpassesForGuard = async (req, res) => {
   try {
     const admin = await Admin.findOne({ username: req.username });
-
     const invalidOutpasses = await Outpass.find({
       $and: [{ $or: [{ status: "Used" }] }],
     })
@@ -136,9 +174,11 @@ export const getInvalidOutpassesForGuard = async (req, res) => {
         path: "student",
       })
       .exec();
-
     return res.status(200).json({ data: invalidOutpasses });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
+

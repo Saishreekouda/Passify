@@ -44,6 +44,12 @@ const outpassSchema = new Schema({
   issuedBy: {
     type: String,
   },
+  exitTime: {
+    type:String,
+  },
+  guard: {
+    type: String,
+  }
 });
 
 export default model("Outpass", outpassSchema);
