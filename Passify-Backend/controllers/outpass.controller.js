@@ -50,26 +50,35 @@ export const getOutpass = async (req, res) => {
 
 export const getAllOutpassesForStudent = async (req, res) => {
   try {
-    //get the id of the student from username and then search in outpass database for all outpasses of that student
+    // Get the id of the student from username and then search in outpass database for all outpasses of that student
+    const statfilter = req.query.status;
+  
+    const username = req.username; // Assuming username is obtained correctly from the request
     const outpasses = await Outpass.find()
       .populate({
         path: "student",
-        match: { rollNumber: req.username },
+        match: { rollNumber: username },
       })
       .exec();
-    const filteredOutpasses = outpasses.filter(
-      (outpass) => outpass.student !== null
-    );
 
+    
+    let filteredOutpasses = outpasses.filter((outpass) => outpass.student !== null);
+  
+    if (statfilter) {
+      filteredOutpasses = filteredOutpasses.filter((outpass) => outpass.status === statfilter);
+    }
+ 
     return res.status(200).json({ data: filteredOutpasses });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
+
 //only admin can get
 
 export const getAllOutpassesForAdmin = async (req, res) => {
   try {
+    let statusFilter=req.query.status;
     const admin = await Admin.findOne({ username: req.username });
     const outpasses = await Outpass.find({
       $or: [
@@ -87,6 +96,11 @@ export const getAllOutpassesForAdmin = async (req, res) => {
       })
       .exec();
 
+    if(statusFilter)
+    {
+      let filteredOutpasses= outpasses.filter((outpass)=>outpass.status===statusFilter);
+      return res.status(200).json({ data: filteredOutpasses })
+    }
     return res.status(200).json({ data: outpasses });
   } catch (error) {
     return res.status(500).json({ message: error.message });
@@ -174,6 +188,7 @@ export const getInvalidOutpassesForGuard = async (req, res) => {
         path: "student",
       })
       .exec();
+    
     return res.status(200).json({ data: invalidOutpasses });
   } catch (error) {
     return res.status(500).json({ message: error.message });
