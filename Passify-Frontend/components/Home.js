@@ -187,6 +187,7 @@ const Home = () => {
 
         {/* Time Picker Modal */}
         <TimePickerModal
+          locale="en-gb"
           visible={timePickerVisible}
           onDismiss={() => setTimePickerVisible(false)}
           onConfirm={handleTimeConfirm}
