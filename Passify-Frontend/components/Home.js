@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet, ScrollView } from "react-native";
 import { Button, TextInput } from "react-native-paper";
-import axios from "axios";
-import Navbar from "./Navbar";
+import {
+  DatePickerModal,
+  registerTranslation,
+  enGB,
+} from "react-native-paper-dates";
+import { TimePickerModal } from "react-native-paper-dates";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import home from "../assets/home.png";
 import { useNavigation } from "@react-navigation/native";
@@ -12,14 +17,18 @@ let token = "none";
 
 const Home = () => {
   const navigation = useNavigation();
+  registerTranslation("en-gb", enGB);
 
   const [formData, setFormData] = useState({
     destination: "",
-    outDate: "",
-    outTime: "",
+    outDate: null,
+    outTime: null, // Store selected time as Date object
     transport: "",
     purpose: "",
   });
+
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
+  const [timePickerVisible, setTimePickerVisible] = useState(false);
 
   const retrieveStudentLogin = async () => {
     try {
@@ -36,6 +45,19 @@ const Home = () => {
     }
   };
 
+  const formatDate = (date) => {
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Month is zero-based
+    const year = date.getFullYear();
+
+    // Ensure two-digit format for day and month (e.g., 01, 02, ..., 09)
+    const formattedDay = day < 10 ? `0${day}` : `${day}`;
+    const formattedMonth = month < 10 ? `0${month}` : `${month}`;
+
+    // Create the formatted date string in "dd-mm-yyyy" format
+    return `${formattedDay}-${formattedMonth}-${year}`;
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       await retrieveStudentLogin();
@@ -44,8 +66,22 @@ const Home = () => {
     fetchData();
   }, []);
 
-  const handleInputChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
+  const handleDateConfirm = (params) => {
+    setDatePickerVisible(false);
+    const selectedDate = params.date;
+
+    setFormData({ ...formData, outDate: selectedDate });
+  };
+
+  const handleTimeConfirm = ({ hours, minutes }) => {
+    setTimePickerVisible(false);
+
+    // Create a new Date object with selected time components
+    const selectedTime = new Date();
+    selectedTime.setHours(hours);
+    selectedTime.setMinutes(minutes);
+
+    setFormData({ ...formData, outTime: selectedTime });
   };
 
   const handleSubmit = async () => {
@@ -66,8 +102,8 @@ const Home = () => {
 
       setFormData({
         destination: "",
-        outDate: "",
-        outTime: "",
+        outDate: null,
+        outTime: null,
         transport: "",
         purpose: "",
       });
@@ -75,16 +111,6 @@ const Home = () => {
     } catch (error) {
       console.error("Error:", error);
     }
-  };
-
-  const fillTestApplication = () => {
-    setFormData({
-      destination: "Test Destination",
-      outDate: "2024-05-10",
-      outTime: "10:00 AM",
-      transport: "Bus",
-      purpose: "Test Purpose",
-    });
   };
 
   return (
@@ -99,46 +125,77 @@ const Home = () => {
             style={styles.input}
             placeholder="Destination"
             value={formData.destination}
-            onChangeText={(text) => handleInputChange("destination", text)}
+            onChangeText={(text) =>
+              setFormData({ ...formData, destination: text })
+            }
             left={<TextInput.Icon icon="map-marker" />}
           />
           <TextInput
             style={styles.input}
             placeholder="Out Date"
-            value={formData.outDate}
-            onChangeText={(text) => handleInputChange("outDate", text)}
+            value={formData.outDate ? formatDate(formData.outDate) : ""}
+            onTouchStart={() => setDatePickerVisible(true)}
             left={<TextInput.Icon icon="calendar" />}
           />
           <TextInput
             style={styles.input}
             placeholder="Out Time"
-            value={formData.outTime}
-            onChangeText={(text) => handleInputChange("outTime", text)}
+            value={
+              formData.outTime
+                ? formData.outTime.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : ""
+            }
+            onTouchStart={() => setTimePickerVisible(true)}
             left={<TextInput.Icon icon="clock" />}
           />
           <TextInput
             style={styles.input}
             placeholder="Transport"
             value={formData.transport}
-            onChangeText={(text) => handleInputChange("transport", text)}
+            onChangeText={(text) =>
+              setFormData({ ...formData, transport: text })
+            }
             left={<TextInput.Icon icon="car" />}
           />
           <TextInput
             style={styles.input}
             placeholder="Purpose"
             value={formData.purpose}
-            onChangeText={(text) => handleInputChange("purpose", text)}
+            onChangeText={(text) => setFormData({ ...formData, purpose: text })}
             left={<TextInput.Icon icon="account" />}
           />
 
           <Button mode="contained" onPress={handleSubmit} style={styles.button}>
             Submit
           </Button>
-
-          <Button onPress={fillTestApplication} style={styles.button}>
-            Fill Test Application
-          </Button>
         </View>
+
+        {/* Date Picker Modal */}
+        <DatePickerModal
+          visible={datePickerVisible}
+          mode="single"
+          locale="en-gb"
+          onDismiss={() => setDatePickerVisible(false)}
+          date={formData.outDate || new Date()} // Pass Date object to date picker
+          onConfirm={handleDateConfirm}
+          validRange={{ startDate: new Date() }}
+          presentationStyle="overFullScreen"
+        />
+
+        {/* Time Picker Modal */}
+        <TimePickerModal
+          locale="en-gb"
+          visible={timePickerVisible}
+          onDismiss={() => setTimePickerVisible(false)}
+          onConfirm={handleTimeConfirm}
+          hours={formData.outTime ? formData.outTime.getHours() : 12}
+          minutes={formData.outTime ? formData.outTime.getMinutes() : 0}
+          minHour={new Date().getHours()} // Set minHour to current hour
+          minMinute={new Date().getMinutes()} // Set minMinute to current minute
+        />
       </ScrollView>
     </View>
   );
