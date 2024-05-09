@@ -23,36 +23,35 @@ export default function Outpass({ route }) {
     status,
     _id,
     issuedBy,
-    issueDate,
-    issueTime,
+    issueDateTime,
   } = route.params;
-  const [sname, setName] = useState("");
-  const [srollno, setRollno] = useState("");
+
   const [role, setRole] = useState("student");
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const formatDate = (dateStr) => {
+    // Parse the date string into a Date object
+    const parsedDate = new Date(dateStr);
 
-  const fetchData = async () => {
-    const { role, token } = await retrieveStudentLogin();
-    if (role && token) {
-      try {
-        const response = await axios.get(
-          process.env.EXPO_PUBLIC_API_URL + `/${role}/outpass`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        setName(response.data.data[0].student.name);
-        setRollno(response.data.data[0].student.rollNumber);
-      } catch (error) {
-        console.error("Error fetching applications:", error);
-      }
+    // Check if parsedDate is a valid Date object
+    if (isNaN(parsedDate)) {
+      return "Invalid Date"; // Handle invalid date string
     }
+
+    // Format the parsedDate using your existing formatDate logic
+    const formattedDay = String(parsedDate.getDate()).padStart(2, "0");
+    const formattedMonth = String(parsedDate.getMonth() + 1).padStart(2, "0");
+    const formattedYear = parsedDate.getFullYear();
+
+    // Create the formatted date string in "dd-mm-yyyy" format
+    return `${formattedDay}-${formattedMonth}-${formattedYear}`;
+  };
+
+  const formatTime = (timeStr) => {
+    // Assuming timeStr is in a format that can be directly formatted by toLocaleTimeString
+    return new Date(timeStr).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
   };
 
   const retrieveStudentLogin = async () => {
@@ -93,7 +92,7 @@ export default function Outpass({ route }) {
     try {
       const token = await AsyncStorage.getItem("token");
       const response = await axios.patch(
-        process.env.EXPO_PUBLIC_API_URL + `/admin/outpass/${route.params.id}`,
+        process.env.EXPO_PUBLIC_API_URL + `/admin/outpass/${_id}`,
         { status: "Rejected" },
         {
           headers: {
@@ -124,22 +123,33 @@ export default function Outpass({ route }) {
         <View style={styles.detailsContainer}>
           <DetailRow label="Name" icon="user" text={name} />
           <DetailRow label="Roll Number" icon="user" text={rollno} />
-          <DetailRow label="Out Date" icon="calendar" text={outDate} />
-          <DetailRow label="Out Time" icon="clock-o" text={outTime} />
+          <DetailRow
+            label="Out Date"
+            icon="calendar"
+            text={formatDate(outDate)}
+          />
+          <DetailRow
+            label="Out Time"
+            icon="clock-o"
+            text={formatTime(outTime)}
+          />
           <DetailRow label="Transport" icon="bus" text={transport} />
           <DetailRow label="Purpose of Visit" icon="user" text={purpose} />
         </View>
-        <View style={[styles.issuedBy, { marginTop: 20 }]}>
-          <Text style={{ color: "white", padding: 4 }}>
-            Issued By: {issuedBy}
-          </Text>
-          <Text style={{ color: "white", padding: 4 }}>
-            Issue Date: {issueDate}
-          </Text>
-          <Text style={{ color: "white", padding: 4 }}>
-            Issue Time: {issueTime}
-          </Text>
-        </View>
+        {issuedBy && issueDateTime && (
+          <View style={[styles.issuedBy, { marginTop: 20 }]}>
+            <Text style={{ color: "white", padding: 4 }}>
+              Issued By: {issuedBy}
+            </Text>
+
+            <Text style={{ color: "white", padding: 4 }}>
+              Issue Date: {formatDate(issueDateTime)}
+            </Text>
+            <Text style={{ color: "white", padding: 4 }}>
+              Issue Time: {formatTime(issueDateTime)}
+            </Text>
+          </View>
+        )}
         {role == "admin" && (
           <View
             style={{

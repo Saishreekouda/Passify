@@ -58,6 +58,28 @@ const Home = () => {
     return `${formattedDay}-${formattedMonth}-${year}`;
   };
 
+  const fillTestCredentials = () => {
+    const getRandomString = (length) => {
+      const characters =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      let result = "";
+      for (let i = 0; i < length; i++) {
+        result += characters.charAt(
+          Math.floor(Math.random() * characters.length)
+        );
+      }
+      return result;
+    };
+
+    setFormData({
+      destination: getRandomString(10), // Generate a random string of length 10
+      outDate: new Date(),
+      outTime: new Date(),
+      transport: "Cab Test",
+      purpose: "Shopping Test",
+    });
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       await retrieveStudentLogin();
@@ -170,6 +192,10 @@ const Home = () => {
 
           <Button mode="contained" onPress={handleSubmit} style={styles.button}>
             Submit
+          </Button>
+          <Button mode="text" onPress={fillTestCredentials}>
+            {" "}
+            Fill Test Credentials{" "}
           </Button>
         </View>
 

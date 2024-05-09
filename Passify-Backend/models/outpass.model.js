@@ -11,11 +11,11 @@ const outpassSchema = new Schema({
     required: true,
   },
   outDate: {
-    type: String,
+    type: Date,
     required: true,
   },
   outTime: {
-    type: String,
+    type: Date,
     required: true,
   },
   transport: {
@@ -31,25 +31,22 @@ const outpassSchema = new Schema({
     enum: ["Accepted", "Pending", "Used", "Rejected"],
     default: "Pending",
   },
-  applicationTime: {
+  applicationDateTime: {
     type: Date,
-    default: Date.now,
+    required: true,
   },
-  issueDate: {
-    type: String,
-  },
-  issueTime: {
-    type: String,
+  issueDateTime: {
+    type: Date,
   },
   issuedBy: {
     type: String,
   },
-  exitTime: {
-    type:String,
+  exitDateTime: {
+    type: Date,
   },
   guard: {
     type: String,
-  }
+  },
 });
 
 export default model("Outpass", outpassSchema);

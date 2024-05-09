@@ -79,7 +79,7 @@ export default function ApplicationsPage() {
       <Pressable key={index} onPress={() => handlePress(app)}>
         <Application
           destination={app.destination}
-          time={app.outTime}
+          time={app.applicationDateTime}
           status={app.status}
           date={app.outDate}
           name={app.student.name}

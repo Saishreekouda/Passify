@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 export default function Application({
@@ -7,16 +7,42 @@ export default function Application({
   destination,
   time,
   status,
-  date,
+  date, // Assume date is coming as a string from API (e.g., "2024-05-09T12:30:00")
   role,
 }) {
+  const formatDate = (dateStr) => {
+    // Parse the date string into a Date object
+    const parsedDate = new Date(dateStr);
+
+    // Check if parsedDate is a valid Date object
+    if (isNaN(parsedDate)) {
+      return "Invalid Date"; // Handle invalid date string
+    }
+
+    // Format the parsedDate using your existing formatDate logic
+    const formattedDay = String(parsedDate.getDate()).padStart(2, "0");
+    const formattedMonth = String(parsedDate.getMonth() + 1).padStart(2, "0");
+    const formattedYear = parsedDate.getFullYear();
+
+    // Create the formatted date string in "dd-mm-yyyy" format
+    return `${formattedDay}-${formattedMonth}-${formattedYear}`;
+  };
+
+  const formatTime = (timeStr) => {
+    // Assuming timeStr is in a format that can be directly formatted by toLocaleTimeString
+    return new Date(timeStr).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.card}>
         <View style={styles.flex}>
           <View>
             <Text style={styles.destination}>{destination}</Text>
-            {role != "student" && (
+            {role !== "student" && (
               <View>
                 <Text style={[styles.time, { marginTop: 0 }]}>{name}</Text>
                 <Text style={[styles.time, { marginTop: 2 }]}>{rollno}</Text>
@@ -31,8 +57,8 @@ export default function Application({
           </View>
         </View>
         <View style={[styles.flex, { marginTop: 20, marginBottom: 12 }]}>
-          <Text style={styles.date}>{date}</Text>
-          <Text style={styles.time}>{time}</Text>
+          <Text style={styles.date}>{formatDate(date)}</Text>
+          <Text style={styles.time}>{formatTime(time)}</Text>
         </View>
       </View>
     </View>

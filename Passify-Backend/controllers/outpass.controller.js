@@ -20,6 +20,7 @@ export const createOutpass = async (req, res) => {
       destination: destination,
       outDate: outDate,
       outTime: outTime,
+      applicationDateTime: new Date(),
       transport: transport,
       purpose: purpose,
     });
@@ -52,7 +53,7 @@ export const getAllOutpassesForStudent = async (req, res) => {
   try {
     // Get the id of the student from username and then search in outpass database for all outpasses of that student
     const statfilter = req.query.status;
-  
+
     const username = req.username; // Assuming username is obtained correctly from the request
     const outpasses = await Outpass.find()
       .populate({
@@ -61,14 +62,24 @@ export const getAllOutpassesForStudent = async (req, res) => {
       })
       .exec();
 
-    
-    let filteredOutpasses = outpasses.filter((outpass) => outpass.student !== null);
-  
+    let filteredOutpasses = outpasses.filter(
+      (outpass) => outpass.student !== null
+    );
+
     if (statfilter) {
-      filteredOutpasses = filteredOutpasses.filter((outpass) => outpass.status === statfilter);
+      filteredOutpasses = filteredOutpasses.filter(
+        (outpass) => outpass.status === statfilter
+      );
     }
- 
-    return res.status(200).json({ data: filteredOutpasses });
+
+    filteredOutpasses.sort(
+      (a, b) =>
+        new Date(b.applicationDateTime) - new Date(a.applicationDateTime)
+    );
+
+    return res
+      .status(200)
+      .json({ nb: filteredOutpasses.length, data: filteredOutpasses });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -78,7 +89,7 @@ export const getAllOutpassesForStudent = async (req, res) => {
 
 export const getAllOutpassesForAdmin = async (req, res) => {
   try {
-    let statusFilter=req.query.status;
+    let statusFilter = req.query.status;
     const admin = await Admin.findOne({ username: req.username });
     const outpasses = await Outpass.find({
       $or: [
@@ -96,12 +107,20 @@ export const getAllOutpassesForAdmin = async (req, res) => {
       })
       .exec();
 
-    if(statusFilter)
-    {
-      let filteredOutpasses= outpasses.filter((outpass)=>outpass.status===statusFilter);
-      return res.status(200).json({ data: filteredOutpasses })
+    outpasses.sort(
+      (a, b) =>
+        new Date(b.applicationDateTime) - new Date(a.applicationDateTime)
+    );
+
+    if (statusFilter) {
+      let filteredOutpasses = outpasses.filter(
+        (outpass) => outpass.status === statusFilter
+      );
+      return res
+        .status(200)
+        .json({ nb: filteredOutpasses.length, data: filteredOutpasses });
     }
-    return res.status(200).json({ data: outpasses });
+    return res.status(200).json({ nb: outpasses.length, data: outpasses });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -128,8 +147,8 @@ export const updateStatus = async (req, res) => {
     console.log(admin);
     outpass.status = status;
     outpass.issuedBy = admin.name;
-    outpass.issueTime = getFormattedTime();
-    outpass.issueDate = getFormattedDate();
+    outpass.issueDateTime = new Date();
+
     console.log(outpass);
     await outpass.save();
 
@@ -141,42 +160,44 @@ export const updateStatus = async (req, res) => {
 
 // invalidate an outpass when its scanned
 export const invalidateOutpass = async (req, res) => {
-  try{
-    const guardname=req.username;
+  try {
+    const guardname = req.username;
     const outpass = await Outpass.findById(req.params.id);
-    const status=outpass.status;
-    const outTime=outpass.outTime;
-    const outDate=outpass.outDate;
+    const status = outpass.status;
+    const outTime = outpass.outTime;
+    const outDate = outpass.outDate;
     const currentTime = new Date();
     const timeDifference = (currentTime - outTime) / (1000 * 60 * 60); // Difference in hours
-    const dateDifference = (currentTime.getDate() !== outDate); // Difference in days
-    
+    const dateDifference = currentTime.getDate() !== outDate; // Difference in days
+
     console.log(guardname);
-    if(!outpass){
-      return res.status(404).json({message: "Outpass not found"});
+    if (!outpass) {
+      return res.status(404).json({ message: "Outpass not found" });
     }
-    if(status!== "Accepted"){
-      return res.status(400).json({message: "Outpass hasn't been accepted by admin"});
+    if (status !== "Accepted") {
+      return res
+        .status(400)
+        .json({ message: "Outpass hasn't been accepted by admin" });
     }
-    if(timeDifference > 3){
-      return res.status(400).json({message: "Outpass has expired, its been past 3 hours since out time"});
+    if (timeDifference > 3) {
+      return res.status(400).json({
+        message: "Outpass has expired, its been past 3 hours since out time",
+      });
     }
-    if(!dateDifference){
-      return res.status(400).json({message: `Outpass has expired, its been past ${dateDifference} day since out date`});
+    if (!dateDifference) {
+      return res.status(400).json({
+        message: `Outpass has expired, its been past ${dateDifference} day since out date`,
+      });
     }
     outpass.status = "Used";
     outpass.guard = guardname;
-    outpass.exitTime=currentTime;
+    outpass.exitDateTime = new Date();
     await outpass.save();
     return res.status(200).json({ data: outpass });
-
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
-  catch(error)
-  {
-    return res.status(500).json({message: error.message})
-  }
-}
-
+};
 
 export const getInvalidOutpassesForGuard = async (req, res) => {
   try {
@@ -188,12 +209,11 @@ export const getInvalidOutpassesForGuard = async (req, res) => {
         path: "student",
       })
       .exec();
-    
-    return res.status(200).json({ data: invalidOutpasses });
+
+    return res
+      .status(200)
+      .json({ nb: invalidOutpasses.length, data: invalidOutpasses });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
 };
-
-
-

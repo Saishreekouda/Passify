@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
+import { Button } from "react-native-paper";
 import { Camera } from "expo-camera";
 import { useFocusEffect } from "@react-navigation/native";
 
@@ -62,11 +63,32 @@ export default function App({ navigation }) {
             type={Camera.Constants.Type.back}
             onBarCodeScanned={handleBarCodeScanned}
           >
-            <Button title="Close Camera" onPress={toggleCamera} />
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "flex-end",
+                alignItems: "center",
+                paddingBottom: 20,
+              }}
+            >
+              <Button mode="contained" onPress={toggleCamera}>
+                Close Camera
+              </Button>
+            </View>
           </Camera>
         </View>
       ) : (
-        <Button title="Open Camera" onPress={toggleCamera} />
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Button mode="contained" title="Open Camera" onPress={toggleCamera}>
+            Open Camera
+          </Button>
+        </View>
       )}
       {scannedData && (
         <View style={styles.dataContainer}>
@@ -80,8 +102,8 @@ export default function App({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    height: "100%",
+    justifyContent: "center",
+    alignContent: "center",
   },
   dataContainer: {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
