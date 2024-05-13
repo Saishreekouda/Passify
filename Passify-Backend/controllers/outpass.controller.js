@@ -217,3 +217,31 @@ export const getInvalidOutpassesForGuard = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+
+export const searchOutpasses = async (req, res) => {
+  try {
+    const rollNumber = req.params.rollNumber;
+    console.log(rollNumber);
+    if (!rollNumber) {
+      return res.status(400).json({ message: 'Roll number is required' });
+    }
+
+    // Get the id of the student from username and then search in outpass database for all outpasses of that student
+    const outpasses = await Outpass.find()
+      .populate({
+        path: 'student',
+        match: { rollNumber }, 
+        select: '_id', 
+      })
+      .exec();
+
+      console.log(outpasses);
+
+    const filteredOutpasses = outpasses.filter(outpass => outpass.student !== null);
+
+    return res.status(200).json({ nb: filteredOutpasses.length, data: filteredOutpasses });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
