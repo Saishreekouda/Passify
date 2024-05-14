@@ -1,98 +1,64 @@
-import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { CameraView, useCameraPermissions } from "expo-camera";
 import { Button } from "react-native-paper";
-import { Camera } from "expo-camera";
-import { useFocusEffect } from "@react-navigation/native";
 
-export default function App({ navigation }) {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [cameraOpen, setCameraOpen] = useState(false);
-  const [scannedData, setScannedData] = useState(null);
+export default function App() {
+  const [facing, setFacing] = useState("back");
+  const [isOpen, setIsOpen] = useState(false);
+  const [scannedText, setScannedText] = useState("Hello");
+  const [permission, requestPermission] = useCameraPermissions();
 
-  const handleBarCodeScanned = ({ type, data }) => {
-    setScannedData(`Outpass ID: ${data}`);
-    setCameraOpen(false);
-  };
-
-  const getCameraPermission = async () => {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    setHasPermission(status === "granted");
-  };
-
-  useEffect(() => {
-    getCameraPermission();
-  }, []);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      // Refresh camera permissions and reset camera state on focus
-      getCameraPermission();
-      setCameraOpen(false);
-      setScannedData(null);
-    }, [])
-  );
-
-  const toggleCamera = () => {
-    setCameraOpen((prev) => !prev);
-    setScannedData(null);
-  };
-
-  if (hasPermission === null) {
+  if (!permission) {
+    // Camera permissions are still loading.
     return <View />;
   }
-  if (hasPermission === false) {
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
     return (
       <View style={styles.container}>
-        <Text>No access to camera</Text>
-        <Button
-          title="Grant Permission"
-          onPress={() => {
-            getCameraPermission();
-          }}
-        />
+        <Text style={styles.text}>
+          We need your permission to use the camera
+        </Text>
+        <TouchableOpacity style={styles.button} onPress={requestPermission}>
+          <Text style={styles.buttonText}>Grant Permission</Text>
+        </TouchableOpacity>
       </View>
     );
   }
 
+  const handleScan = ({ data }) => {
+    setScannedText(data);
+    setIsOpen(false); // Close the camera after scanning
+  };
+
+  const toggleCamera = () => {
+    setIsOpen((prev) => !prev); // Toggle camera open/close
+    setScannedText("Hello"); // Reset scanned text when opening camera
+  };
+
   return (
     <View style={styles.container}>
-      {cameraOpen ? (
-        <View style={{ flex: 1 }}>
-          <Camera
-            style={{ flex: 1 }}
-            type={Camera.Constants.Type.back}
-            onBarCodeScanned={handleBarCodeScanned}
-          >
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "flex-end",
-                alignItems: "center",
-                paddingBottom: 20,
-              }}
-            >
-              <Button mode="contained" onPress={toggleCamera}>
-                Close Camera
-              </Button>
-            </View>
-          </Camera>
-        </View>
-      ) : (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
+      {isOpen ? (
+        <CameraView
+          barcodeScannerSettings={{
+            barcodeTypes: ["qr"],
           }}
+          style={styles.camera}
+          facing={facing}
+          onBarcodeScanned={handleScan}
         >
-          <Button mode="contained" title="Open Camera" onPress={toggleCamera}>
-            Open Camera
+          <TouchableOpacity style={styles.toggleButton} onPress={toggleCamera}>
+            <Text style={styles.buttonText}> Close Camera</Text>
+          </TouchableOpacity>
+        </CameraView>
+      ) : (
+        <View>
+          <Button style={styles.toggleButton} onPress={toggleCamera}>
+            <Text style={styles.buttonText}> Open Camera </Text>
           </Button>
-        </View>
-      )}
-      {scannedData && (
-        <View style={styles.dataContainer}>
-          <Text style={styles.dataText}>{scannedData}</Text>
+          <Text style={styles.text}>{scannedText}</Text>
         </View>
       )}
     </View>
@@ -103,16 +69,33 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFF",
   },
-  dataContainer: {
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    padding: 20,
-    borderRadius: 10,
-    marginTop: 20,
+  camera: {
+    width: "100%",
+    height: "100%",
   },
-  dataText: {
-    fontSize: 18,
+  text: {
+    color: "#000",
+  },
+  button: {
+    padding: 10,
+    backgroundColor: "#007BFF",
+    borderRadius: 5,
+  },
+  buttonText: {
     color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  toggleButton: {
+    position: "absolute",
+    bottom: 20,
+    alignSelf: "center",
+    backgroundColor: "#007BFF",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 5,
   },
 });
