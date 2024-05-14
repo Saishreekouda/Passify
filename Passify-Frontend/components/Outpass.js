@@ -54,17 +54,20 @@ export default function Outpass({ route }) {
     });
   };
 
-  const retrieveStudentLogin = async () => {
-    try {
-      const role = await AsyncStorage.getItem("role");
-      setRole(role);
-      const token = await AsyncStorage.getItem("token");
-      return { role, token };
-    } catch (error) {
-      console.error(error);
-      return { role: null, token: null };
-    }
-  };
+
+  // const retrieveStudentLogin = async () => {
+  //   try {
+  //     console.log("Fetching applications")
+  //     role = await AsyncStorage.getItem('role');
+  //     const token = await AsyncStorage.getItem('token');
+  //     console.log("Role: ", role);
+  //     console.log("Token: ", token);
+  //     return { role, token };
+  //   } catch (error) {
+  //     console.error(error);
+  //     return { role: null, token: null };
+  //   }
+  // };       
 
   const handleAccept = async () => {
     try {
@@ -107,6 +110,30 @@ export default function Outpass({ route }) {
       console.error("Error:", error);
     }
   };
+
+  const handleExit = async () => {
+    try {
+      const token = await AsyncStorage.getItem("token");
+      // console.log("hiii",token);
+      const response = await axios.patch(
+        process.env.EXPO_PUBLIC_API_URL + `/guard/outpass/${_id}`,
+        { status: "Used" },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("hi", response.data.data.status)
+      if (response.data.data.status === "Used")
+        Navigation.navigate("ApplicationsPage");
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  }
+
+  // console.log(role);
 
   return (
     <ScrollView style={styles.container}>
@@ -181,6 +208,9 @@ export default function Outpass({ route }) {
                 Reject
               </Button>
             )}
+
+            
+
           </View>
         )}
 
@@ -191,6 +221,18 @@ export default function Outpass({ route }) {
           <Qr value={_id} />
         </View>
       )}
+
+      {status==="Accepted"  &&
+            <Button
+            style={{ borderColor: "red" }}
+            textColor="red"
+            mode="outlined"
+            icon="close"
+            onPress={handleExit}
+          >
+           Confirm Exit
+          </Button>
+            }
     </ScrollView>
   );
 }
