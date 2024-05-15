@@ -24,9 +24,36 @@ export default function Outpass({ route }) {
     _id,
     issuedBy,
     issueDateTime,
+    role,
+    guard,
+    exitDateTime,
   } = route.params;
 
-  const [role, setRole] = useState("student");
+  // const [role, setRole] = useState("student");
+
+  // const retrieveLogin = async () => {
+  //   try {
+  //     const role = await AsyncStorage.getItem("role");
+  //     token = await AsyncStorage.getItem("token");
+  //     if (!token) {
+  //       console.error("Token not found");
+  //       return;
+  //     }
+  //     console.log("Role: ", role);
+  //     console.log("Token: ", token);
+  //     console.log("Status: ", status);
+  //   } catch (error) {
+  //     console.error("Error retrieving token:", error);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     await retrieveLogin();
+  //   };
+
+  //   fetchData();
+  // }, []);
 
   const formatDate = (dateStr) => {
     // Parse the date string into a Date object
@@ -51,23 +78,9 @@ export default function Outpass({ route }) {
     return new Date(timeStr).toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: true,
     });
   };
-
-
-  // const retrieveStudentLogin = async () => {
-  //   try {
-  //     console.log("Fetching applications")
-  //     role = await AsyncStorage.getItem('role');
-  //     const token = await AsyncStorage.getItem('token');
-  //     console.log("Role: ", role);
-  //     console.log("Token: ", token);
-  //     return { role, token };
-  //   } catch (error) {
-  //     console.error(error);
-  //     return { role: null, token: null };
-  //   }
-  // };       
 
   const handleAccept = async () => {
     try {
@@ -104,6 +117,7 @@ export default function Outpass({ route }) {
           },
         }
       );
+
       if (response.data.data.status === "Rejected")
         Navigation.navigate("ApplicationsPage");
     } catch (error) {
@@ -125,13 +139,14 @@ export default function Outpass({ route }) {
           },
         }
       );
-      console.log("hi", response.data.data.status)
+
       if (response.data.data.status === "Used")
         Navigation.navigate("ApplicationsPage");
     } catch (error) {
-      console.error("Error:", error);
+      console.log("Error:", error.response.data.message);
+      alert(error.response.data.message);
     }
-  }
+  };
 
   // console.log(role);
 
@@ -177,62 +192,73 @@ export default function Outpass({ route }) {
             </Text>
           </View>
         )}
-        {role == "admin" && (
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: 32,
-            }}
-          >
-            {status === "Pending" && (
-              <Button
-                style={{ borderColor: "green", marginRight: 48 }}
-                textColor="green"
-                mode="outlined"
-                icon="check"
-                onPress={handleAccept}
-              >
-                Accept
-              </Button>
-            )}
-            {status === "Pending" && (
-              <Button
-                style={{ borderColor: "red" }}
-                textColor="red"
-                mode="outlined"
-                icon="close"
-                onPress={handleReject}
-              >
-                Reject
-              </Button>
-            )}
+        {exitDateTime && guard && (
+          <View style={[styles.issuedBy, { marginTop: 20 }]}>
+            <Text style={{ color: "white", padding: 4 }}>
+              Guard At Exit: {guard}
+            </Text>
 
-            
-
+            <Text style={{ color: "white", padding: 4 }}>
+              Exit Date: {formatDate(exitDateTime)}
+            </Text>
+            <Text style={{ color: "white", padding: 4 }}>
+              Exit Time: {formatTime(exitDateTime)}
+            </Text>
           </View>
         )}
 
         <StatusBar style="auto" />
       </View>
+
+      {status === "Pending" && role == "admin" && (
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: 32,
+          }}
+        >
+          <Button
+            style={{ borderColor: "green", marginRight: 48 }}
+            textColor="green"
+            mode="outlined"
+            icon="check"
+            onPress={handleAccept}
+          >
+            Accept
+          </Button>
+          <Button
+            style={{ borderColor: "red" }}
+            textColor="red"
+            mode="outlined"
+            icon="close"
+            onPress={handleReject}
+          >
+            Reject
+          </Button>
+        </View>
+      )}
       {status === "Accepted" && role == "student" && (
         <View style={styles.qrContainer}>
           <Qr value={_id} />
         </View>
       )}
 
-      {status==="Accepted"  &&
-            <Button
+      {status === "Accepted" && role == "guard" && (
+        <View style={[styles.qrContainer, { marginTop: "2" }]}>
+          <Button
             style={{ borderColor: "red" }}
             textColor="red"
             mode="outlined"
-            icon="close"
+            icon="check"
             onPress={handleExit}
+            width="80%"
           >
-           Confirm Exit
+            Confirm Exit
           </Button>
-            }
+        </View>
+      )}
     </ScrollView>
   );
 }

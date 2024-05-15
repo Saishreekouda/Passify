@@ -179,16 +179,16 @@ export const invalidateOutpass = async (req, res) => {
         .status(400)
         .json({ message: "Outpass hasn't been accepted by admin" });
     }
-    if (timeDifference > 3) {
-      return res.status(400).json({
-        message: "Outpass has expired, its been past 3 hours since out time",
-      });
-    }
-    if (!dateDifference) {
-      return res.status(400).json({
-        message: `Outpass has expired, its been past ${dateDifference} day since out date`,
-      });
-    }
+    // if (timeDifference > 3) {
+    //   return res.status(400).json({
+    //     message: "Outpass has expired, its been past 3 hours since out time",
+    //   });
+    // }
+    // if (!dateDifference) {
+    //   return res.status(400).json({
+    //     message: `Outpass has expired, its been past ${dateDifference} day since out date`,
+    //   });
+    // }
     outpass.status = "Used";
     outpass.guard = guardname;
     outpass.exitDateTime = new Date();
@@ -218,29 +218,32 @@ export const getInvalidOutpassesForGuard = async (req, res) => {
   }
 };
 
-
 export const searchOutpasses = async (req, res) => {
   try {
     const rollNumber = req.params.rollNumber;
     console.log(rollNumber);
     if (!rollNumber) {
-      return res.status(400).json({ message: 'Roll number is required' });
+      return res.status(400).json({ message: "Roll number is required" });
     }
 
     // Get the id of the student from username and then search in outpass database for all outpasses of that student
     const outpasses = await Outpass.find()
       .populate({
-        path: 'student',
-        match: { rollNumber }, 
-        select: '_id', 
+        path: "student",
+        match: { rollNumber },
+        select: "_id",
       })
       .exec();
 
-      console.log(outpasses);
+    console.log(outpasses);
 
-    const filteredOutpasses = outpasses.filter(outpass => outpass.student !== null);
+    const filteredOutpasses = outpasses.filter(
+      (outpass) => outpass.student !== null
+    );
 
-    return res.status(200).json({ nb: filteredOutpasses.length, data: filteredOutpasses });
+    return res
+      .status(200)
+      .json({ nb: filteredOutpasses.length, data: filteredOutpasses });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

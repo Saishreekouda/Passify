@@ -33,6 +33,7 @@ export default function Application({
     return new Date(timeStr).toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: true,
     });
   };
 

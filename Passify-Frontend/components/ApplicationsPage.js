@@ -23,7 +23,7 @@ export default function ApplicationsPage() {
 
   const fetchData = useCallback(async () => {
     setRefreshing(true);
-    const { role: retrievedRole, token } = await retrieveStudentLogin();
+    const { role: retrievedRole, token } = await retrieveLogin();
     if (retrievedRole && token) {
       try {
         setRole(retrievedRole);
@@ -55,7 +55,7 @@ export default function ApplicationsPage() {
     }, [fetchData])
   );
 
-  const retrieveStudentLogin = async () => {
+  const retrieveLogin = async () => {
     try {
       const role = await AsyncStorage.getItem("role");
       const token = await AsyncStorage.getItem("token");
@@ -71,6 +71,7 @@ export default function ApplicationsPage() {
       ...app,
       name: app.student.name,
       rollno: app.student.rollNumber,
+      role: role,
     });
   };
 
