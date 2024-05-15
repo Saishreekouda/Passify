@@ -179,16 +179,16 @@ export const invalidateOutpass = async (req, res) => {
         .status(400)
         .json({ message: "Outpass hasn't been accepted by admin" });
     }
-    // if (timeDifference > 3) {
-    //   return res.status(400).json({
-    //     message: "Outpass has expired, its been past 3 hours since out time",
-    //   });
-    // }
-    // if (!dateDifference) {
-    //   return res.status(400).json({
-    //     message: `Outpass has expired, its been past ${dateDifference} day since out date`,
-    //   });
-    // }
+    if (timeDifference > 3) {
+      return res.status(400).json({
+        message: "Outpass has expired, its been past 3 hours since out time",
+      });
+    }
+    if (!dateDifference) {
+      return res.status(400).json({
+        message: `Outpass has expired, its been past ${dateDifference} day since out date`,
+      });
+    }
     outpass.status = "Used";
     outpass.guard = guardname;
     outpass.exitDateTime = new Date();
